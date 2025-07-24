@@ -323,3 +323,62 @@ function altalayi_get_company_info() {
         'website' => altalayi_get_option('company_website', home_url())
     );
 }
+
+/**
+ * Get all notification email addresses based on settings
+ */
+function altalayi_get_notification_emails() {
+    $emails = array();
+    
+    // Get the main admin notification email
+    $admin_email = altalayi_get_option('admin_notification_email', get_option('admin_email'));
+    if (!empty($admin_email) && is_email($admin_email)) {
+        $emails[] = $admin_email;
+    }
+    
+    // Get emails from selected roles
+    $notification_roles = altalayi_get_option('notification_roles', array('administrator'));
+    if (!empty($notification_roles) && is_array($notification_roles)) {
+        foreach ($notification_roles as $role) {
+            $users = get_users(array('role' => $role, 'fields' => 'user_email'));
+            foreach ($users as $user_email) {
+                if (!empty($user_email) && is_email($user_email) && !in_array($user_email, $emails)) {
+                    $emails[] = $user_email;
+                }
+            }
+        }
+    }
+    
+    // Get additional notification emails
+    $additional_emails = altalayi_get_option('additional_notification_emails', '');
+    if (!empty($additional_emails)) {
+        $additional_emails_array = array_map('trim', explode("\n", $additional_emails));
+        foreach ($additional_emails_array as $email) {
+            if (!empty($email) && is_email($email) && !in_array($email, $emails)) {
+                $emails[] = $email;
+            }
+        }
+    }
+    
+    return array_unique($emails);
+}
+
+/**
+ * Check if notifications are enabled
+ */
+function altalayi_notifications_enabled() {
+    return altalayi_get_option('enable_email_notifications', 1) == 1;
+}
+
+/**
+ * Check if specific notification type is enabled
+ */
+function altalayi_notification_type_enabled($type) {
+    $enabled_types = array(
+        'new_ticket' => altalayi_get_option('notify_on_new_ticket', 1),
+        'status_change' => altalayi_get_option('notify_on_status_change', 1),
+        'customer_response' => altalayi_get_option('notify_on_customer_response', 1)
+    );
+    
+    return isset($enabled_types[$type]) && $enabled_types[$type] == 1;
+}

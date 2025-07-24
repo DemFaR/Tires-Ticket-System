@@ -147,7 +147,9 @@ class AltalayiTicketAjax {
         
         $ticket_id = intval($_POST['ticket_id']);
         $note = sanitize_textarea_field($_POST['note']);
-        $visible_to_customer = isset($_POST['visible_to_customer']) ? 1 : 0;
+        
+        // Fix: Properly handle checkbox value
+        $visible_to_customer = isset($_POST['visible_to_customer']) && $_POST['visible_to_customer'] == '1' ? 1 : 0;
         
         if (empty($note)) {
             wp_send_json_error(array('message' => __('Please provide a note', 'altalayi-ticket')));
