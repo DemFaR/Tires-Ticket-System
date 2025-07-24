@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WordPress File Duplication Debug Test v3.0</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .test-section { margin: 30px 0; padding: 25px; border: 2px solid #e74c3c; border-radius: 8px; background: #fdf2f2; }
+        .file-upload-area { 
+            border: 2px dashed #3498db; 
+            padding: 25px; 
+            text-align: center; 
+            margin: 15px 0; 
+            border-radius: 8px;
+            position: relative;
+            background: #f8f9fa;
+        }
+        .file-upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-preview { 
+            margin: 20px 0; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 15px; 
+            min-height: 60px;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            background: #fff;
+        }
+        .file-preview-item { 
+            background: #e8f5e8; 
+            border: 2px solid #27ae60; 
+            border-radius: 6px; 
+            padding: 15px; 
+            text-align: center; 
+            position: relative;
+        }
+        .file-preview-item img { 
+            max-width: 100%; 
+            max-height: 100px; 
+            border-radius: 4px; 
+        }
+        .file-name { 
+            font-size: 14px; 
+            margin-top: 8px; 
+            word-break: break-all; 
+            font-weight: bold;
+            color: #2c3e50;
+            background: #fff;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .file-remove { 
+            position: absolute; 
+            top: -8px; 
+            right: -8px; 
+            background: #e74c3c; 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 25px; 
+            height: 25px; 
+            cursor: pointer; 
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .file-remove:hover { background: #c0392b; }
+        .debug-console { 
+            background: #2c3e50; 
+            color: #ecf0f1; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 6px; 
+            font-family: 'Courier New', monospace; 
+            max-height: 300px; 
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+        .clear-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
+        h2 { color: #e74c3c; border-bottom: 3px solid #e74c3c; padding-bottom: 8px; }
+        .warning { background: #fff3cd; padding: 15px; border-left: 5px solid #ffc107; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 WordPress File Duplication Debug v3.0 - DIRECT BINDING</h1>
+        
+        <div class="warning">
+            <strong>⚠️ THIS TEST MIMICS WORDPRESS BEHAVIOR:</strong><br>
+            • Uses exact same HTML structure as WordPress form<br>
+            • Uses direct event binding instead of delegation<br>
+            • Includes detailed debug logging<br>
+            • Tests the EXACT same code as WordPress version
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 Test: Tire Images (Multiple Upload)</h2>
+            <div class="file-upload-area">
+                <input type="file" id="tire_images" name="tire_images[]" multiple accept="image/*">
+                <p><strong>📸 Select 2-3 DIFFERENT images to test duplication fix</strong></p>
+                <small>Look for each image showing its UNIQUE filename below</small>
+            </div>
+            <div id="tire-images-preview" class="file-preview"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Test: Receipt/Invoice (Single Upload)</h2>
+            <div class="file-upload-area">
+                <input type="file" id="receipt_image" name="receipt_image" accept="image/*,.pdf">
+                <p><strong>📄 Select one receipt/invoice file</strong></p>
+                <small>Should show correct filename</small>
+            </div>
+            <div id="receipt-preview" class="file-preview"></div>
+        </div>
+
+        <button class="clear-btn" onclick="clearDebug()">🧹 Clear Debug Console</button>
+        <div id="debug-console" class="debug-console">🚀 Debug console ready - v3.0 DIRECT BINDING approach...\n</div>
+    </div>
+
+    <script>
+    function addDebug(message) {
+        const console = document.getElementById('debug-console');
+        const timestamp = new Date().toLocaleTimeString();
+        console.textContent += `[${timestamp}] ${message}\n`;
+        console.scrollTop = console.scrollHeight;
+    }
+    
+    function clearDebug() {
+        document.getElementById('debug-console').textContent = '🧹 Debug console cleared - v3.0 DIRECT BINDING...\n';
+    }
+
+    jQuery(document).ready(function($) {
+        addDebug('🚀 jQuery ready - File Upload v3.0 DIRECT BINDING approach');
+        
+        // EXACT SAME FUNCTION AS WORDPRESS VERSION
+        function setupFilePreview(inputId, previewId) {
+            var input = $('#' + inputId);
+            var preview = $('#' + previewId);
+            
+            if (input.length === 0) {
+                addDebug('❌ Input not found: ' + inputId);
+                return;
+            }
+            
+            // Remove any existing event handlers first
+            input.off('change.filePreview');
+            
+            // Bind directly to the input element
+            input.on('change.filePreview', function() {
+                var files = this.files;
+                preview.empty();
+                
+                addDebug('📁 DIRECT BINDING - Processing ' + files.length + ' files for ' + inputId);
+                
+                if (files.length === 0) {
+                    addDebug('📭 No files selected');
+                    return;
+                }
+                
+                // Create an array to store file data with proper indexing
+                var fileDataArray = [];
+                
+                // First, collect all file data
+                for (let i = 0; i < files.length; i++) {
+                    fileDataArray.push({
+                        file: files[i],
+                        index: i,
+                        name: files[i].name,
+                        type: files[i].type
+                    });
+                }
+                
+                addDebug('📋 File array created: [' + fileDataArray.map(f => f.name).join(', ') + ']');
+                
+                // Process each file data
+                fileDataArray.forEach(function(fileData) {
+                    addDebug('🔄 Processing file: "' + fileData.name + '" index: ' + fileData.index);
+                    
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        addDebug('✅ FileReader completed for: "' + fileData.name + '"');
+                        
+                        var previewItem = $('<div class="file-preview-item">');
+                        
+                        if (fileData.type.startsWith('image/')) {
+                            previewItem.append('<img src="' + e.target.result + '" alt="Preview">');
+                        } else {
+                            previewItem.append('<div style="font-size: 30px;">📄</div>');
+                        }
+                        
+                        previewItem.append('<div class="file-name">' + fileData.name + '</div>');
+                        previewItem.append('<button type="button" class="file-remove" data-filename="' + fileData.name + '" data-input-id="' + inputId + '">&times;</button>');
+                        
+                        preview.append(previewItem);
+                        addDebug('🎯 Preview added for: "' + fileData.name + '"');
+                    };
+                    
+                    reader.onerror = function() {
+                        addDebug('❌ FileReader error for: "' + fileData.name + '"');
+                    };
+                    
+                    reader.readAsDataURL(fileData.file);
+                });
+            });
+            
+            addDebug('✅ Direct binding set for: ' + inputId);
+        }
+        
+        // Initialize all file upload handlers
+        setupFilePreview('tire_images', 'tire-images-preview');
+        setupFilePreview('receipt_image', 'receipt-preview');
+        
+        addDebug('✅ ALL file preview handlers initialized with DIRECT BINDING');
+        
+        // Remove file preview
+        $(document).on('click', '.file-remove', function() {
+            var filename = $(this).data('filename');
+            var inputId = $(this).data('input-id');
+            addDebug('🗑️ Removing file: "' + filename + '" from input: ' + inputId);
+            $(this).parent().remove();
+        });
+    });
+    </script>
+    
+    <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #74b9ff, #0984e3); color: white; border-radius: 8px;">
+        <h3>🎯 Critical Test - Exact WordPress Code:</h3>
+        <ol>
+            <li><strong>Select 2-3 DIFFERENT images</strong> with completely different filenames</li>
+            <li><strong>Check debug console</strong> - should show each file being processed individually</li>
+            <li><strong>Verify previews</strong> - each should show its ACTUAL filename</li>
+            <li><strong>Expected:</strong> NO duplicate filenames in any preview</li>
+        </ol>
+        
+        <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 6px;">
+            <strong>🔧 v3.0 CHANGES:</strong><br>
+            • ❌ Removed event delegation ($(document).on)<br>
+            • ✅ Added direct event binding (.on)<br>
+            • ✅ Added .off() to prevent duplicate handlers<br>
+            • ✅ Pre-collect file data in array<br>
+            • ✅ Enhanced debug logging with quotes around filenames
+        </div>
+        
+        <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.15); border-radius: 4px;">
+            <strong>⚡ If this test works but WordPress doesn't:</strong><br>
+            The issue is WordPress-specific (theme conflicts, other plugins, etc.)
+        </div>
+    </div>
+</body>
+</html>
