@@ -20,6 +20,43 @@ class AltalayiTicketDatabase {
         $this->attachments_table = $wpdb->prefix . 'altalayi_ticket_attachments';
         $this->statuses_table = $wpdb->prefix . 'altalayi_ticket_statuses';
         $this->ticket_updates_table = $wpdb->prefix . 'altalayi_ticket_updates';
+        
+        // Check if database needs updates
+        $this->maybe_update_database();
+    }
+    
+    /**
+     * Check if database schema needs updates
+     */
+    private function maybe_update_database() {
+        global $wpdb;
+        
+        $current_version = get_option('altalayi_ticket_db_version', '1.0.0');
+        $plugin_version = ALTALAYI_TICKET_VERSION;
+        
+        if (version_compare($current_version, $plugin_version, '<')) {
+            $this->update_database_schema();
+            update_option('altalayi_ticket_db_version', $plugin_version);
+        }
+    }
+    
+    /**
+     * Update database schema
+     */
+    private function update_database_schema() {
+        global $wpdb;
+        
+        // Check if purchase_location column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'purchase_location'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN purchase_location varchar(255) AFTER purchase_date");
+        }
+        
+        // Check if mileage column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'mileage'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN mileage int(11) AFTER purchase_location");
+        }
     }
     
     /**
@@ -42,6 +79,8 @@ class AltalayiTicketDatabase {
             tire_model varchar(255),
             tire_size varchar(255),
             purchase_date date,
+            purchase_location varchar(255),
+            mileage int(11),
             complaint_date datetime DEFAULT CURRENT_TIMESTAMP,
             status_id int(11) NOT NULL DEFAULT 1,
             assigned_to bigint(20) NULL,
@@ -382,6 +421,18 @@ class AltalayiTicketDatabase {
     }
     
     /**
+     * Get status by name
+     */
+    public function get_status_by_name($status_name) {
+        global $wpdb;
+        
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->statuses_table} WHERE status_name = %s AND is_active = 1",
+            $status_name
+        ));
+    }
+    
+    /**
      * Get statistics
      */
     public function get_statistics() {
@@ -513,6 +564,38 @@ class AltalayiTicketDatabase {
             return $wpdb->get_results($wpdb->prepare($sql, $where_values));
         } else {
             return $wpdb->get_results($sql);
+        }
+    }
+    
+    /**
+     * Delete a ticket and all associated data
+     */
+    public function delete_ticket($ticket_id) {
+        global $wpdb;
+        
+        $wpdb->query('START TRANSACTION');
+        
+        try {
+            // Delete attachments
+            $wpdb->delete($this->attachments_table, array('ticket_id' => $ticket_id), array('%d'));
+            
+            // Delete ticket updates
+            $wpdb->delete($this->ticket_updates_table, array('ticket_id' => $ticket_id), array('%d'));
+            
+            // Delete the ticket itself
+            $result = $wpdb->delete($this->tickets_table, array('id' => $ticket_id), array('%d'));
+            
+            if ($result === false) {
+                $wpdb->query('ROLLBACK');
+                return false;
+            }
+            
+            $wpdb->query('COMMIT');
+            return true;
+            
+        } catch (Exception $e) {
+            $wpdb->query('ROLLBACK');
+            return false;
         }
     }
 }

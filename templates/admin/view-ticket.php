@@ -53,6 +53,12 @@ if (!defined('ABSPATH')) {
                                 <button type="button" class="button button-small edit-assignment-btn">
                                     <?php _e('Change', 'altalayi-ticket'); ?>
                                 </button>
+                                <?php if ($ticket->assigned_to != get_current_user_id()): ?>
+                                <button type="button" class="button button-small button-primary assign-to-me-btn" 
+                                        data-ticket-id="<?php echo esc_attr($ticket->id); ?>">
+                                    <?php _e('Assign to Me', 'altalayi-ticket'); ?>
+                                </button>
+                                <?php endif; ?>
                             </div>
                             <div class="assignment-editor" style="display: none;">
                                 <select class="assignment-selector">
@@ -206,7 +212,7 @@ if (!defined('ABSPATH')) {
                     <?php if (!empty($grouped_attachments['additional'])): ?>
                     <div class="content-section">
                         <h3>
-                            <i class="dashicons dashicons-paperclip"></i>
+                            <i class="dashicons dashicons-admin-media"></i>
                             <?php _e('Additional Documents', 'altalayi-ticket'); ?> 
                             <span class="attachment-count">(<?php echo count($grouped_attachments['additional']); ?>)</span>
                         </h3>
@@ -220,6 +226,63 @@ if (!defined('ABSPATH')) {
                 <?php endif; ?>
             </div>
         </div>
+        
+        <!-- Customer Responses -->
+        <?php 
+        $customer_responses = array_filter($updates, function($update) {
+            return $update->update_type === 'customer_response';
+        });
+        ?>
+        <?php if (!empty($customer_responses)): ?>
+        <div class="customer-responses-section">
+            <h3>
+                <i class="dashicons dashicons-format-chat"></i>
+                <?php _e('Customer Responses', 'altalayi-ticket'); ?> 
+                <span class="response-count">(<?php echo count($customer_responses); ?>)</span>
+            </h3>
+            <div class="customer-responses-list">
+                <?php foreach ($customer_responses as $response): ?>
+                    <div class="customer-response-item">
+                        <div class="response-header">
+                            <div class="response-label">
+                                <i class="dashicons dashicons-businessman"></i>
+                                <?php _e('Customer Response', 'altalayi-ticket'); ?>
+                            </div>
+                            <div class="response-date">
+                                <?php echo altalayi_format_date($response->update_date, 'F j, Y g:i A'); ?>
+                            </div>
+                        </div>
+                        <div class="response-content">
+                            <?php echo nl2br(esc_html($response->notes)); ?>
+                        </div>
+                        <?php 
+                        // Get attachments for this response if any
+                        $response_attachments = array_filter($attachments, function($att) use ($response) {
+                            return $att->attachment_type === 'additional' && 
+                                   abs(strtotime($att->upload_date) - strtotime($response->update_date)) < 300; // Within 5 minutes
+                        });
+                        ?>
+                        <?php if (!empty($response_attachments)): ?>
+                        <div class="response-attachments">
+                            <small class="attachment-label"><?php _e('Attached files:', 'altalayi-ticket'); ?></small>
+                            <div class="response-attachments-grid">
+                                <?php foreach ($response_attachments as $attachment): ?>
+                                    <div class="response-attachment-item">
+                                        <i class="dashicons dashicons-media-default"></i>
+                                        <span class="attachment-name"><?php echo esc_html($attachment->file_name); ?></span>
+                                        <a href="<?php echo esc_url($attachment->file_path); ?>" target="_blank" class="attachment-link">
+                                            <?php _e('View', 'altalayi-ticket'); ?>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
         
         <!-- Add Note Section -->
         <div class="add-note-section">
@@ -244,11 +307,16 @@ if (!defined('ABSPATH')) {
         </div>
         
         <!-- Ticket History -->
-        <?php if (!empty($updates)): ?>
+        <?php 
+        $history_updates = array_filter($updates, function($update) {
+            return $update->update_type !== 'customer_response';
+        });
+        ?>
+        <?php if (!empty($history_updates)): ?>
         <div class="ticket-history">
             <h3><?php _e('Ticket History', 'altalayi-ticket'); ?></h3>
             <div class="history-timeline">
-                <?php foreach ($updates as $update): ?>
+                <?php foreach (array_reverse($history_updates) as $update): ?>
                     <div class="history-item <?php echo esc_attr($update->update_type); ?>">
                         <div class="history-icon">
                             <?php
@@ -261,9 +329,6 @@ if (!defined('ABSPATH')) {
                                     break;
                                 case 'note':
                                     echo '<i class="dashicons dashicons-edit"></i>';
-                                    break;
-                                case 'customer_response':
-                                    echo '<i class="dashicons dashicons-format-chat"></i>';
                                     break;
                                 default:
                                     echo '<i class="dashicons dashicons-marker"></i>';
@@ -352,6 +417,23 @@ if (!defined('ABSPATH')) {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+}
+
+.assign-to-me-btn {
+    background: #27ae60 !important;
+    border-color: #27ae60 !important;
+    color: white !important;
+}
+
+.assign-to-me-btn:hover {
+    background: #219a52 !important;
+    border-color: #219a52 !important;
+}
+
+.assign-to-me-btn:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
 }
 
 .status-editor, .assignment-editor {
@@ -429,70 +511,88 @@ if (!defined('ABSPATH')) {
 
 .attachments-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .attachment-item {
-    background: #fff;
-    border: 2px solid #e1e1e1;
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
     border-radius: 8px;
-    padding: 15px;
+    padding: 16px;
     text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 260px;
 }
 
 .attachment-item:hover {
     border-color: #0073aa;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,115,170,0.1);
     transform: translateY(-2px);
 }
 
 .attachment-image img {
     max-width: 100%;
-    height: 120px;
+    width: 100%;
+    height: 140px;
     object-fit: cover;
     border-radius: 6px;
     cursor: pointer;
     transition: transform 0.2s ease;
-    border: 1px solid #ddd;
+    border: 1px solid #e1e5e9;
+    margin-bottom: 12px;
 }
 
 .attachment-image img:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 .attachment-file {
-    height: 120px;
+    height: 140px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 64px;
-    color: #666;
+    font-size: 56px;
+    color: #0073aa;
     background: #f8f9fa;
     border-radius: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid #e1e5e9;
+    margin-bottom: 12px;
+}
+
+.attachment-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .attachment-name {
     font-size: 13px;
-    margin: 12px 0 8px 0;
-    word-break: break-word;
     font-weight: 600;
     color: #2c3e50;
     line-height: 1.3;
-    min-height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-bottom: 8px;
+    word-break: break-word;
+    text-align: center;
+    display: block;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .attachment-meta {
     font-size: 11px;
     color: #7c8b9a;
     margin-bottom: 12px;
+    text-align: center;
 }
 
 .attachment-actions {
@@ -500,15 +600,19 @@ if (!defined('ABSPATH')) {
     gap: 8px;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: auto;
 }
 
 .attachment-actions .button {
     font-size: 11px;
-    padding: 4px 12px;
+    padding: 6px 12px;
     height: auto;
-    line-height: 1.4;
+    line-height: 1.3;
     border-radius: 4px;
     text-decoration: none;
+    flex: 1;
+    max-width: 80px;
+    white-space: nowrap;
 }
 
 .attachment-actions .button:hover {
@@ -607,6 +711,139 @@ if (!defined('ABSPATH')) {
     margin-top: 10px;
 }
 
+.customer-responses-section {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.customer-responses-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #1565c0;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customer-responses-section h3:before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, #1565c0, #0d47a1);
+    border-radius: 2px;
+}
+
+.customer-responses-section h3 .dashicons {
+    color: #1565c0;
+    font-size: 20px;
+}
+
+.response-count {
+    background: #1565c0;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.customer-response-item {
+    background: #f8f9fa;
+    border: 1px solid #e3f2fd;
+    border-left: 4px solid #1565c0;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 15px;
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.response-label {
+    font-weight: 600;
+    color: #1565c0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.response-date {
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.response-content {
+    color: #2c3e50;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    background: white;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #e1e5e9;
+}
+
+.response-attachments {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.attachment-label {
+    color: #7f8c8d;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.response-attachments-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.response-attachment-item {
+    background: white;
+    border: 1px solid #e1e5e9;
+    border-radius: 4px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.response-attachment-item .dashicons {
+    color: #1565c0;
+    font-size: 16px;
+}
+
+.response-attachment-item .attachment-name {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.response-attachment-item .attachment-link {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.response-attachment-item .attachment-link:hover {
+    text-decoration: underline;
+}
+
 .image-modal {
     position: fixed;
     z-index: 1000;
@@ -663,7 +900,7 @@ jQuery(document).ready(function($) {
         var ticketId = statusManager.data('ticket-id');
         var statusId = statusManager.find('.status-selector').val();
         
-        $.post(ajaxurl, {
+        $.post(altalayi_admin_ajax.ajax_url, {
             action: 'altalayi_update_ticket_status',
             ticket_id: ticketId,
             status_id: statusId,
@@ -695,17 +932,80 @@ jQuery(document).ready(function($) {
         var ticketId = assignmentManager.data('ticket-id');
         var userId = assignmentManager.find('.assignment-selector').val();
         
-        $.post(ajaxurl, {
+        $.post(altalayi_admin_ajax.ajax_url, {
             action: 'altalayi_assign_ticket',
             ticket_id: ticketId,
             assigned_to: userId,
             nonce: altalayi_admin_ajax.nonce
         }, function(response) {
             if (response.success) {
-                location.reload();
+                // Show success message with status change info if applicable
+                let message = response.data.message;
+                if (response.data.status_changed) {
+                    message += ' and status changed to "' + response.data.new_status + '"';
+                }
+                
+                // Create and show success notification
+                if ($('.notice-success').length === 0) {
+                    $('.ticket-details').prepend('<div class="notice notice-success is-dismissible"><p>' + message + '</p></div>');
+                }
+                
+                // Refresh page after 1 second to show all updates
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
             } else {
                 alert('Error assigning ticket: ' + (response.data ? response.data.message : 'Unknown error'));
             }
+        });
+    });
+    
+    // Assign to me functionality
+    $('.assign-to-me-btn').on('click', function() {
+        var $btn = $(this);
+        var ticketId = $btn.data('ticket-id');
+        
+        // Disable button and show loading state
+        $btn.prop('disabled', true).text('Assigning...');
+        
+        $.post(altalayi_admin_ajax.ajax_url, {
+            action: 'altalayi_assign_to_me',
+            ticket_id: ticketId,
+            nonce: altalayi_admin_ajax.nonce
+        })
+        .done(function(response) {
+            if (response.success) {
+                // Update assigned user display
+                $('.assigned-display').html(response.data.assigned_user);
+                
+                // Hide the "Assign to Me" button
+                $btn.hide();
+                
+                // Show success message
+                let message = response.data.message;
+                if (response.data.status_changed) {
+                    message += ' and status changed to "' + response.data.new_status + '"';
+                }
+                
+                // Create and show success notification
+                if ($('.notice-success').length === 0) {
+                    $('.ticket-details').prepend('<div class="notice notice-success is-dismissible"><p>' + message + '</p></div>');
+                }
+                
+                // Refresh page after 2 seconds to show all updates
+                setTimeout(function() {
+                    location.reload();
+                }, 2000);
+            } else {
+                alert('Error: ' + response.data.message);
+                // Re-enable button
+                $btn.prop('disabled', false).text('Assign to Me');
+            }
+        })
+        .fail(function() {
+            alert('Network error occurred');
+            // Re-enable button
+            $btn.prop('disabled', false).text('Assign to Me');
         });
     });
     
@@ -716,7 +1016,7 @@ jQuery(document).ready(function($) {
         var noteContent = $('textarea[name="note_content"]').val();
         var visibleToCustomer = $('input[name="visible_to_customer"]').is(':checked') ? 1 : 0;
         
-        $.post(ajaxurl, {
+        $.post(altalayi_admin_ajax.ajax_url, {
             action: 'altalayi_add_ticket_note',
             ticket_id: <?php echo $ticket->id; ?>,
             note: noteContent,

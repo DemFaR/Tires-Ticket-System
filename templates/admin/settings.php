@@ -27,7 +27,8 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['altalayi_settings_nonce']
         'tickets_per_page' => intval($_POST['tickets_per_page']),
         'allow_file_uploads' => isset($_POST['allow_file_uploads']) ? 1 : 0,
         'max_file_size' => intval($_POST['max_file_size']),
-        'allowed_file_types' => sanitize_text_field($_POST['allowed_file_types'])
+        'allowed_file_types' => sanitize_text_field($_POST['allowed_file_types']),
+        'show_delete_button' => isset($_POST['show_delete_button']) ? 1 : 0
     );
     
     update_option('altalayi_ticket_settings', $settings);
@@ -56,7 +57,8 @@ $defaults = array(
     'tickets_per_page' => 20,
     'allow_file_uploads' => 1,
     'max_file_size' => 5,
-    'allowed_file_types' => 'jpg,jpeg,png,gif,pdf,doc,docx'
+    'allowed_file_types' => 'jpg,jpeg,png,gif,pdf,doc,docx',
+    'show_delete_button' => 0
 );
 
 // Merge with defaults
@@ -97,6 +99,21 @@ $all_roles = $wp_roles->roles;
                                value="<?php echo esc_attr($settings['tickets_per_page']); ?>" 
                                min="5" max="100" class="small-text" />
                         <p class="description"><?php _e('Number of tickets to display per page in admin.', 'altalayi-ticket'); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="show_delete_button"><?php _e('Show Delete Buttons', 'altalayi-ticket'); ?></label>
+                    </th>
+                    <td>
+                        <fieldset>
+                            <label for="show_delete_button">
+                                <input type="checkbox" id="show_delete_button" name="show_delete_button" value="1" 
+                                       <?php checked($settings['show_delete_button'], 1); ?> />
+                                <?php _e('Show delete buttons in ticket lists', 'altalayi-ticket'); ?>
+                            </label>
+                            <p class="description"><?php _e('When enabled, delete buttons will appear in dashboard, open tickets, and closed tickets lists. Deleting a ticket will permanently remove all associated files from the server.', 'altalayi-ticket'); ?></p>
+                        </fieldset>
                     </td>
                 </tr>
             </table>

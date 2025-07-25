@@ -17,9 +17,12 @@ class AltalayiTicketAjax {
         // Admin AJAX actions
         add_action('wp_ajax_altalayi_update_ticket_status', array($this, 'update_ticket_status'));
         add_action('wp_ajax_altalayi_assign_ticket', array($this, 'assign_ticket'));
+        add_action('wp_ajax_altalayi_assign_to_me', array($this, 'assign_to_me'));
         add_action('wp_ajax_altalayi_add_ticket_note', array($this, 'add_ticket_note'));
         add_action('wp_ajax_altalayi_delete_attachment', array($this, 'delete_attachment'));
         add_action('wp_ajax_altalayi_bulk_action', array($this, 'bulk_action'));
+        add_action('wp_ajax_altalayi_delete_ticket', array($this, 'delete_ticket'));
+        add_action('wp_ajax_altalayi_cleanup_orphaned_files', array($this, 'cleanup_orphaned_files'));
         
         // Frontend AJAX actions
         add_action('wp_ajax_nopriv_altalayi_submit_ticket', array($this, 'submit_ticket'));
@@ -107,30 +110,159 @@ class AltalayiTicketAjax {
         
         $old_assigned = $ticket->assigned_user_name;
         
-        // Update assignment
-        $result = $this->db->update_ticket($ticket_id, array('assigned_to' => $assigned_to));
+        // Only find "Assigned" status if current status is "Open" and assigning to someone (not unassigning)
+        $assigned_status = null;
+        if ($assigned_to > 0 && strtolower($ticket->status_name) === 'open') {
+            // First try to get it by name
+            $assigned_status = $this->db->get_status_by_name('Assigned');
+            if (!$assigned_status) {
+                // If "Assigned" doesn't exist, try other common names
+                $assigned_status = $this->db->get_status_by_name('In Progress');
+                if (!$assigned_status) {
+                    $assigned_status = $this->db->get_status_by_name('Working');
+                }
+            }
+        }
         
-        if ($result) {
-            $assigned_user = get_user_by('ID', $assigned_to);
+        // Update assignment
+        $assignment_result = $this->db->update_ticket($ticket_id, array('assigned_to' => $assigned_to));
+        
+        // Update status only if we found an "Assigned" status and current status is "Open"
+        $status_result = true;
+        if ($assigned_status && strtolower($ticket->status_name) === 'open') {
+            $status_result = $this->db->update_ticket($ticket_id, array('status_id' => $assigned_status->id));
+        }
+        
+        if ($assignment_result) {
+            $assigned_user = $assigned_to ? get_user_by('ID', $assigned_to) : null;
+            $assigned_user_name = $assigned_user ? $assigned_user->display_name : '';
             
-            // Add update log
+            // Add assignment update log
             $this->db->add_ticket_update(
                 $ticket_id,
                 'assignment',
                 $old_assigned,
-                $assigned_user->display_name,
+                $assigned_user_name,
                 'Ticket assigned',
                 get_current_user_id(),
                 true
             );
             
+            // Add status change log if status was changed (only for Open tickets)
+            if ($assigned_status && strtolower($ticket->status_name) === 'open' && $status_result) {
+                $this->db->add_ticket_update(
+                    $ticket_id,
+                    'status_change',
+                    $ticket->status_name,
+                    $assigned_status->status_name,
+                    'Status automatically changed due to assignment',
+                    get_current_user_id(),
+                    true
+                );
+            }
+            
             // Send assignment notification
-            $email = new AltalayiTicketEmail();
-            $email->send_assignment_notification($ticket_id, $assigned_to);
+            if ($assigned_to > 0) {
+                $email = new AltalayiTicketEmail();
+                $email->send_assignment_notification($ticket_id, $assigned_to);
+            }
             
             wp_send_json_success(array(
                 'message' => __('Ticket assigned successfully', 'altalayi-ticket'),
-                'assigned_user' => $assigned_user->display_name
+                'assigned_user' => $assigned_user_name,
+                'status_changed' => $assigned_status && strtolower($ticket->status_name) === 'open' ? true : false,
+                'new_status' => $assigned_status && strtolower($ticket->status_name) === 'open' ? $assigned_status->status_name : null
+            ));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to assign ticket', 'altalayi-ticket')));
+        }
+    }
+    
+    /**
+     * Assign ticket to current user and change status to "Assigned"
+     */
+    public function assign_to_me() {
+        if (!wp_verify_nonce($_POST['nonce'], 'altalayi_admin_nonce')) {
+            wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+        }
+        
+        $ticket_id = intval($_POST['ticket_id']);
+        $current_user_id = get_current_user_id();
+        
+        if (!$current_user_id) {
+            wp_send_json_error(array('message' => __('You must be logged in to assign tickets', 'altalayi-ticket')));
+        }
+        
+        $ticket = $this->db->get_ticket($ticket_id);
+        if (!$ticket) {
+            wp_send_json_error(array('message' => __('Ticket not found', 'altalayi-ticket')));
+        }
+        
+        // Check if ticket is already assigned to current user
+        if ($ticket->assigned_to == $current_user_id) {
+            wp_send_json_error(array('message' => __('Ticket is already assigned to you', 'altalayi-ticket')));
+        }
+        
+        $old_assigned = $ticket->assigned_user_name;
+        $current_user = get_user_by('ID', $current_user_id);
+        
+        // Only find "Assigned" status if current status is "Open"
+        $assigned_status = null;
+        if (strtolower($ticket->status_name) === 'open') {
+            // First try to get it by name
+            $assigned_status = $this->db->get_status_by_name('Assigned');
+            if (!$assigned_status) {
+                // If "Assigned" doesn't exist, try other common names
+                $assigned_status = $this->db->get_status_by_name('In Progress');
+                if (!$assigned_status) {
+                    $assigned_status = $this->db->get_status_by_name('Working');
+                }
+            }
+        }
+        
+        // Update assignment
+        $assignment_result = $this->db->update_ticket($ticket_id, array('assigned_to' => $current_user_id));
+        
+        // Update status only if we found an "Assigned" status and current status is "Open"
+        $status_result = true;
+        if ($assigned_status && strtolower($ticket->status_name) === 'open') {
+            $status_result = $this->db->update_ticket($ticket_id, array('status_id' => $assigned_status->id));
+        }
+        
+        if ($assignment_result) {
+            // Add assignment update log
+            $this->db->add_ticket_update(
+                $ticket_id,
+                'assignment',
+                $old_assigned,
+                $current_user->display_name,
+                'Ticket self-assigned',
+                $current_user_id,
+                true
+            );
+            
+            // Add status change log if status was changed (only for Open tickets)
+            if ($assigned_status && strtolower($ticket->status_name) === 'open' && $status_result) {
+                $this->db->add_ticket_update(
+                    $ticket_id,
+                    'status_change',
+                    $ticket->status_name,
+                    $assigned_status->status_name,
+                    'Status automatically changed due to assignment',
+                    $current_user_id,
+                    true
+                );
+            }
+            
+            // Send assignment notification
+            $email = new AltalayiTicketEmail();
+            $email->send_assignment_notification($ticket_id, $current_user_id);
+            
+            wp_send_json_success(array(
+                'message' => __('Ticket successfully assigned to you', 'altalayi-ticket'),
+                'assigned_user' => $current_user->display_name,
+                'status_changed' => $assigned_status ? true : false,
+                'new_status' => $assigned_status ? $assigned_status->status_name : null
             ));
         } else {
             wp_send_json_error(array('message' => __('Failed to assign ticket', 'altalayi-ticket')));
@@ -198,6 +330,16 @@ class AltalayiTicketAjax {
             wp_send_json_error(array('message' => __('Please provide a valid email address', 'altalayi-ticket')));
         }
         
+        // Prepare tire size from individual components
+        $tire_width = sanitize_text_field($_POST['tire_size_width']);
+        $tire_aspect = sanitize_text_field($_POST['tire_size_aspect']);
+        $tire_diameter = sanitize_text_field($_POST['tire_size_diameter']);
+        $tire_size = '';
+        
+        if (!empty($tire_width) && !empty($tire_aspect) && !empty($tire_diameter)) {
+            $tire_size = $tire_width . '/' . $tire_aspect . 'R' . $tire_diameter;
+        }
+        
         // Prepare ticket data
         $ticket_data = array(
             'customer_name' => sanitize_text_field($_POST['customer_name']),
@@ -206,8 +348,10 @@ class AltalayiTicketAjax {
             'complaint_text' => sanitize_textarea_field($_POST['complaint_text']),
             'tire_brand' => sanitize_text_field($_POST['tire_brand']),
             'tire_model' => sanitize_text_field($_POST['tire_model']),
-            'tire_size' => sanitize_text_field($_POST['tire_size']),
-            'purchase_date' => sanitize_text_field($_POST['purchase_date'])
+            'tire_size' => $tire_size,
+            'purchase_date' => sanitize_text_field($_POST['purchase_date']),
+            'purchase_location' => sanitize_text_field($_POST['purchase_location']),
+            'mileage' => intval($_POST['mileage'])
         );
         
         // Create ticket
@@ -279,15 +423,26 @@ class AltalayiTicketAjax {
      * Add customer response
      */
     public function add_customer_response() {
+        // Check if this is a real AJAX request or direct form submission
+        $is_ajax_request = wp_doing_ajax() && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        
         if (!wp_verify_nonce($_POST['nonce'], 'altalayi_ticket_nonce')) {
-            wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+            if ($is_ajax_request) {
+                wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+            } else {
+                wp_die(__('Security check failed', 'altalayi-ticket'));
+            }
         }
         
         $ticket_id = intval($_POST['ticket_id']);
         $response = sanitize_textarea_field($_POST['response']);
         
         if (empty($response)) {
-            wp_send_json_error(array('message' => __('Please provide a response', 'altalayi-ticket')));
+            if ($is_ajax_request) {
+                wp_send_json_error(array('message' => __('Please provide a response', 'altalayi-ticket')));
+            } else {
+                wp_die(__('Please provide a response', 'altalayi-ticket'));
+            }
         }
         
         // Verify customer access to ticket
@@ -297,7 +452,11 @@ class AltalayiTicketAjax {
         }
         
         if (!isset($_SESSION['altalayi_ticket_' . $ticket->ticket_number])) {
-            wp_send_json_error(array('message' => __('Access denied', 'altalayi-ticket')));
+            if ($is_ajax_request) {
+                wp_send_json_error(array('message' => __('Access denied', 'altalayi-ticket')));
+            } else {
+                wp_die(__('Access denied', 'altalayi-ticket'));
+            }
         }
         
         // Add customer response
@@ -313,7 +472,7 @@ class AltalayiTicketAjax {
         
         if ($result) {
             // Handle additional file uploads if any
-            if (!empty($_FILES)) {
+            if (!empty($_FILES['additional_files'])) {
                 $this->handle_file_uploads($ticket_id, 0);
             }
             
@@ -321,9 +480,23 @@ class AltalayiTicketAjax {
             $email = new AltalayiTicketEmail();
             $email->send_customer_response_notification($ticket_id);
             
-            wp_send_json_success(array('message' => __('Response added successfully', 'altalayi-ticket')));
+            // Check if this is a real AJAX request or direct form submission
+            $is_ajax_request = wp_doing_ajax() && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+            
+            if ($is_ajax_request) {
+                wp_send_json_success(array('message' => __('Response added successfully', 'altalayi-ticket')));
+            } else {
+                // Redirect back to ticket page with success message
+                $redirect_url = altalayi_get_ticket_url($ticket->ticket_number) . '?message=success';
+                wp_redirect($redirect_url);
+                exit;
+            }
         } else {
-            wp_send_json_error(array('message' => __('Failed to add response', 'altalayi-ticket')));
+            if ($is_ajax_request) {
+                wp_send_json_error(array('message' => __('Failed to add response', 'altalayi-ticket')));
+            } else {
+                wp_die(__('Failed to add response', 'altalayi-ticket'));
+            }
         }
     }
     
@@ -454,13 +627,11 @@ class AltalayiTicketAjax {
             'text/plain', 'application/rtf'
         );
         if (!in_array($file['type'], $allowed_types)) {
-            error_log("Altalayi Ticket: File type not allowed: " . $file['type'] . " for file: " . $file['name']);
             return false;
         }
         
         // Validate file size (max 5MB)
         if ($file['size'] > 5 * 1024 * 1024) {
-            error_log("Altalayi Ticket: File too large: " . $file['size'] . " for file: " . $file['name']);
             return false;
         }
         
@@ -500,10 +671,7 @@ class AltalayiTicketAjax {
             $attachment_id = $this->db->add_attachment($ticket_id, $file_data);
             
             if ($attachment_id) {
-                error_log("Altalayi Ticket: Successfully saved attachment: " . $file['name'] . " (ID: " . $attachment_id . ", Type: " . $attachment_type . ")");
                 return array_merge($file_data, array('id' => $attachment_id));
-            } else {
-                error_log("Altalayi Ticket: Failed to save attachment to database: " . $file['name']);
             }
         }
         
@@ -542,5 +710,166 @@ class AltalayiTicketAjax {
             esc_html($visibility),
             nl2br(esc_html($note))
         );
+    }
+    
+    /**
+     * Delete attachment
+     */
+    public function delete_attachment() {
+        if (!wp_verify_nonce($_POST['nonce'], 'altalayi_admin_nonce')) {
+            wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+        }
+        
+        $attachment_id = intval($_POST['attachment_id']);
+        
+        if (!$attachment_id) {
+            wp_send_json_error(array('message' => __('Invalid attachment ID', 'altalayi-ticket')));
+        }
+        
+        // Get attachment details
+        global $wpdb;
+        $table = $wpdb->prefix . 'altalayi_ticket_attachments';
+        $attachment = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $attachment_id));
+        
+        if (!$attachment) {
+            wp_send_json_error(array('message' => __('Attachment not found', 'altalayi-ticket')));
+        }
+        
+        // Convert URL to file path and delete file from server
+        $upload_dir = wp_upload_dir();
+        $file_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $attachment->file_path);
+        
+        if (file_exists($file_path)) {
+            wp_delete_file($file_path);
+        }
+        
+        // Delete attachment record from database
+        $result = $wpdb->delete($table, array('id' => $attachment_id), array('%d'));
+        
+        if ($result !== false) {
+            wp_send_json_success(array(
+                'message' => __('Attachment deleted successfully', 'altalayi-ticket'),
+                'attachment_id' => $attachment_id
+            ));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to delete attachment', 'altalayi-ticket')));
+        }
+    }
+    
+    /**
+     * Handle bulk actions
+     */
+    public function bulk_action() {
+        if (!wp_verify_nonce($_POST['nonce'], 'altalayi_admin_nonce')) {
+            wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+        }
+        
+        $action = sanitize_text_field($_POST['bulk_action']);
+        $ticket_ids = array_map('intval', $_POST['ticket_ids']);
+        
+        if (empty($ticket_ids)) {
+            wp_send_json_error(array('message' => __('No tickets selected', 'altalayi-ticket')));
+        }
+        
+        $success_count = 0;
+        $errors = array();
+        
+        switch ($action) {
+            case 'delete':
+                foreach ($ticket_ids as $ticket_id) {
+                    // Get ticket to verify it exists
+                    $ticket = $this->db->get_ticket($ticket_id);
+                    if (!$ticket) {
+                        $errors[] = sprintf(__('Ticket #%d not found', 'altalayi-ticket'), $ticket_id);
+                        continue;
+                    }
+                    
+                    // Get all attachments for this ticket to delete files
+                    $attachments = $this->db->get_ticket_attachments($ticket_id);
+                    
+                    // Delete all files from server
+                    foreach ($attachments as $attachment) {
+                        // Convert URL to file path
+                        $upload_dir = wp_upload_dir();
+                        $file_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $attachment->file_path);
+                        
+                        // Delete file if it exists
+                        if (file_exists($file_path)) {
+                            wp_delete_file($file_path);
+                        }
+                    }
+                    
+                    // Delete ticket and all related data from database
+                    $result = $this->db->delete_ticket($ticket_id);
+                    
+                    if ($result) {
+                        $success_count++;
+                    } else {
+                        $errors[] = sprintf(__('Failed to delete ticket #%d', 'altalayi-ticket'), $ticket_id);
+                    }
+                }
+                
+                if ($success_count > 0) {
+                    $message = sprintf(__('%d tickets deleted successfully', 'altalayi-ticket'), $success_count);
+                    if (!empty($errors)) {
+                        $message .= '. ' . __('Some errors occurred:', 'altalayi-ticket') . ' ' . implode(', ', $errors);
+                    }
+                    wp_send_json_success(array('message' => $message, 'deleted_count' => $success_count));
+                } else {
+                    wp_send_json_error(array('message' => __('Failed to delete tickets: ', 'altalayi-ticket') . implode(', ', $errors)));
+                }
+                break;
+                
+            default:
+                wp_send_json_error(array('message' => __('Invalid bulk action', 'altalayi-ticket')));
+        }
+    }
+    
+    /**
+     * Delete ticket and all associated files
+     */
+    public function delete_ticket() {
+        if (!wp_verify_nonce($_POST['nonce'], 'altalayi_admin_nonce')) {
+            wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+        }
+        
+        $ticket_id = intval($_POST['ticket_id']);
+        
+        if (!$ticket_id) {
+            wp_send_json_error(array('message' => __('Invalid ticket ID', 'altalayi-ticket')));
+        }
+        
+        // Get ticket to verify it exists
+        $ticket = $this->db->get_ticket($ticket_id);
+        if (!$ticket) {
+            wp_send_json_error(array('message' => __('Ticket not found', 'altalayi-ticket')));
+        }
+        
+        // Get all attachments for this ticket to delete files
+        $attachments = $this->db->get_ticket_attachments($ticket_id);
+        
+        // Delete all files from server
+        foreach ($attachments as $attachment) {
+            // Convert URL to file path
+            $upload_dir = wp_upload_dir();
+            $file_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $attachment->file_path);
+            
+            // Delete file if it exists
+            if (file_exists($file_path)) {
+                wp_delete_file($file_path);
+            }
+        }
+        
+        // Delete ticket and all related data from database
+        $result = $this->db->delete_ticket($ticket_id);
+        
+        if ($result) {
+            wp_send_json_success(array(
+                'message' => __('Ticket deleted successfully', 'altalayi-ticket'),
+                'ticket_number' => $ticket->ticket_number
+            ));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to delete ticket', 'altalayi-ticket')));
+        }
     }
 }

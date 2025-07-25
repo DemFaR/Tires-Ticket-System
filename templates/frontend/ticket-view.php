@@ -157,6 +157,64 @@ get_header();
         </div>
         <?php endif; ?>
         
+        <!-- Customer Response Section -->
+        <?php
+        // Check if current ticket status is "More Information Required"
+        $needs_customer_response = (strtolower($ticket->status_name) === 'more information required');
+        ?>
+        
+        <?php if ($needs_customer_response): ?>
+        <div class="info-section customer-response-section">
+            <h2><?php _e('Additional Information Required', 'altalayi-ticket'); ?></h2>
+            <p class="response-instruction">
+                <?php _e('Our team needs additional information to process your ticket. Please provide the requested details below:', 'altalayi-ticket'); ?>
+            </p>
+            
+            <?php if (isset($_GET['message']) && $_GET['message'] === 'success'): ?>
+            <div class="response-message success">
+                <strong><?php _e('Success!', 'altalayi-ticket'); ?></strong> <?php _e('Your response has been submitted successfully.', 'altalayi-ticket'); ?>
+            </div>
+            <?php endif; ?>
+            
+            <form id="customer-response-form" class="response-form" method="post" enctype="multipart/form-data" action="<?php echo admin_url('admin-ajax.php'); ?>">
+                <?php wp_nonce_field('altalayi_ticket_nonce', 'nonce'); ?>
+                <input type="hidden" name="ticket_id" value="<?php echo esc_attr($ticket->id); ?>">
+                <input type="hidden" name="action" value="altalayi_add_customer_response">
+                
+                <div class="form-group">
+                    <label for="customer_response"><?php _e('Your Response:', 'altalayi-ticket'); ?></label>
+                    <textarea id="customer_response" name="response" rows="5" required
+                              placeholder="<?php _e('Please provide the additional information requested by our team...', 'altalayi-ticket'); ?>"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additional_files"><?php _e('Additional Files (Optional):', 'altalayi-ticket'); ?></label>
+                    <div class="file-upload-area">
+                        <input type="file" id="additional_files" name="additional_files[]" multiple accept="image/*,.pdf">
+                        <div class="upload-instructions">
+                            <i class="dashicons dashicons-paperclip"></i>
+                            <p><?php _e('Upload additional documents or images if needed', 'altalayi-ticket'); ?></p>
+                            <small><?php _e('Maximum 5MB per file. Images and PDF files accepted.', 'altalayi-ticket'); ?></small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary submit-btn">
+                        <span class="btn-text">
+                            <i class="dashicons dashicons-yes"></i>
+                            <?php _e('Submit Response', 'altalayi-ticket'); ?>
+                        </span>
+                        <span class="btn-loading" style="display: none;">
+                            <i class="dashicons dashicons-update rotate"></i>
+                            <?php _e('Submitting...', 'altalayi-ticket'); ?>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
+        
         <!-- Ticket Updates -->
         <div class="info-section">
             <h2><?php _e('Ticket Updates', 'altalayi-ticket'); ?></h2>
@@ -221,64 +279,6 @@ get_header();
                 </div>
             <?php endif; ?>
         </div>
-        
-        <!-- Customer Response Section -->
-        <?php
-        // Check if ticket is waiting for customer response
-        $needs_customer_response = false;
-        foreach ($updates as $update) {
-            if ($update->update_type === 'status_change' && 
-                stripos($update->new_value, 'information required') !== false) {
-                $needs_customer_response = true;
-                break;
-            }
-        }
-        ?>
-        
-        <?php if ($needs_customer_response): ?>
-        <div class="info-section customer-response-section">
-            <h2><?php _e('Additional Information Required', 'altalayi-ticket'); ?></h2>
-            <p class="response-instruction">
-                <?php _e('Our team needs additional information to process your ticket. Please provide the requested details below:', 'altalayi-ticket'); ?>
-            </p>
-            
-            <form id="customer-response-form" class="response-form">
-                <?php wp_nonce_field('altalayi_ticket_nonce', 'nonce'); ?>
-                <input type="hidden" name="ticket_id" value="<?php echo esc_attr($ticket->id); ?>">
-                
-                <div class="form-group">
-                    <label for="customer_response"><?php _e('Your Response:', 'altalayi-ticket'); ?></label>
-                    <textarea id="customer_response" name="response" rows="5" required
-                              placeholder="<?php _e('Please provide the additional information requested by our team...', 'altalayi-ticket'); ?>"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="additional_files"><?php _e('Additional Files (Optional):', 'altalayi-ticket'); ?></label>
-                    <div class="file-upload-area">
-                        <input type="file" id="additional_files" name="additional_files[]" multiple accept="image/*,.pdf">
-                        <div class="upload-instructions">
-                            <i class="dashicons dashicons-paperclip"></i>
-                            <p><?php _e('Upload additional documents or images if needed', 'altalayi-ticket'); ?></p>
-                            <small><?php _e('Maximum 5MB per file. Images and PDF files accepted.', 'altalayi-ticket'); ?></small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <span class="btn-text">
-                            <i class="dashicons dashicons-yes"></i>
-                            <?php _e('Submit Response', 'altalayi-ticket'); ?>
-                        </span>
-                        <span class="btn-loading" style="display: none;">
-                            <i class="dashicons dashicons-update rotate"></i>
-                            <?php _e('Submitting...', 'altalayi-ticket'); ?>
-                        </span>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <?php endif; ?>
         
         <div id="response-messages"></div>
     </div>
@@ -793,73 +793,6 @@ get_header();
 </style>
 
 <script>
-jQuery(document).ready(function($) {
-    $('#customer-response-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        var form = $(this);
-        var submitBtn = form.find('.btn-primary');
-        var formData = new FormData(this);
-        formData.append('action', 'altalayi_add_customer_response');
-        
-        // Disable submit button
-        submitBtn.prop('disabled', true);
-        submitBtn.find('.btn-text').hide();
-        submitBtn.find('.btn-loading').show();
-        
-        $.ajax({
-            url: altalayi_ajax.ajax_url,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    $('#response-messages').html(
-                        '<div class="response-message success">' +
-                        '<strong><?php _e("Success!", "altalayi-ticket"); ?></strong> ' +
-                        response.data.message +
-                        '</div>'
-                    );
-                    
-                    // Reset form
-                    form[0].reset();
-                    
-                    // Reload page after 3 seconds to show the new response
-                    setTimeout(function() {
-                        location.reload();
-                    }, 3000);
-                } else {
-                    $('#response-messages').html(
-                        '<div class="response-message error">' +
-                        '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +
-                        response.data.message +
-                        '</div>'
-                    );
-                }
-            },
-            error: function() {
-                $('#response-messages').html(
-                    '<div class="response-message error">' +
-                    '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +
-                    '<?php _e("An unexpected error occurred. Please try again.", "altalayi-ticket"); ?>' +
-                    '</div>'
-                );
-            },
-            complete: function() {
-                // Re-enable submit button
-                submitBtn.prop('disabled', false);
-                submitBtn.find('.btn-text').show();
-                submitBtn.find('.btn-loading').hide();
-                
-                $('html, body').animate({
-                    scrollTop: $('#response-messages').offset().top - 100
-                }, 500);
-            }
-        });
-    });
-});
-
 // Image modal functions
 function openImageModal(src) {
     document.getElementById('modalImage').src = src;

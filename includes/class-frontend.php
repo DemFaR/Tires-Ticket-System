@@ -173,6 +173,7 @@ class AltalayiTicketFrontend {
         
         // Make sure theme stylesheets are loaded
         add_action('wp_enqueue_scripts', array($this, 'enqueue_theme_compatible_styles'), 999);
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_scripts'));
         
         // Add filter to modify page content
         add_filter('the_content', array($this, 'filter_ticket_page_content'), 999);
@@ -247,6 +248,50 @@ class AltalayiTicketFrontend {
      */
     public function enqueue_theme_compatible_styles() {
         wp_enqueue_style('altalayi-ticket-theme-compat', ALTALAYI_TICKET_PLUGIN_URL . 'assets/css/theme-compat.css', array(), ALTALAYI_TICKET_VERSION);
+    }
+    
+    /**
+     * Enqueue frontend scripts and styles
+     */
+    public function enqueue_frontend_scripts() {
+        // Only load on ticket pages
+        if (!isset($this->current_action)) {
+            return;
+        }
+        
+        // Enqueue jQuery
+        wp_enqueue_script('jquery');
+        
+        // Enqueue frontend CSS
+        wp_enqueue_style(
+            'altalayi-frontend-css',
+            ALTALAYI_TICKET_PLUGIN_URL . 'assets/css/frontend.css',
+            array(),
+            ALTALAYI_TICKET_VERSION
+        );
+        
+        // Enqueue frontend JS
+        wp_enqueue_script(
+            'altalayi-frontend-js',
+            ALTALAYI_TICKET_PLUGIN_URL . 'assets/js/frontend.js',
+            array('jquery'),
+            ALTALAYI_TICKET_VERSION,
+            true
+        );
+        
+        // Localize script for AJAX
+        wp_localize_script('altalayi-frontend-js', 'altalayi_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('altalayi_ticket_nonce'),
+            'strings' => array(
+                'uploading' => __('Uploading...', 'altalayi-ticket'),
+                'upload_error' => __('Upload failed. Please try again.', 'altalayi-ticket'),
+                'file_too_large' => __('File is too large. Maximum size is 5MB.', 'altalayi-ticket'),
+                'invalid_file_type' => __('Invalid file type. Only images and PDF files are allowed.', 'altalayi-ticket'),
+                'submitting' => __('Submitting...', 'altalayi-ticket'),
+                'submit_error' => __('Submission failed. Please try again.', 'altalayi-ticket')
+            )
+        ));
     }
     
     /**

@@ -109,6 +109,17 @@ if (!defined('ABSPATH')) {
                                    class="button button-small">
                                     <?php _e('View', 'altalayi-ticket'); ?>
                                 </a>
+                                <?php
+                                $settings = get_option('altalayi_ticket_settings', array());
+                                if (!empty($settings['show_delete_button'])):
+                                ?>
+                                <button type="button" class="button button-small button-link-delete delete-ticket-btn" 
+                                        data-ticket-id="<?php echo esc_attr($ticket->id); ?>"
+                                        data-ticket-number="<?php echo esc_attr($ticket->ticket_number); ?>"
+                                        style="margin-left: 5px;">
+                                    <?php _e('Delete', 'altalayi-ticket'); ?>
+                                </button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -172,4 +183,58 @@ if (!defined('ABSPATH')) {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
+.delete-ticket-btn {
+    color: #a00 !important;
+    border-color: #a00 !important;
+}
+
+.delete-ticket-btn:hover {
+    color: #fff !important;
+    background: #a00 !important;
+    border-color: #a00 !important;
+}
 </style>
+
+<script>
+jQuery(document).ready(function($) {
+    // Delete ticket functionality
+    $('.delete-ticket-btn').on('click', function(e) {
+        e.preventDefault();
+        
+        var $btn = $(this);
+        var ticketId = $btn.data('ticket-id');
+        var ticketNumber = $btn.data('ticket-number');
+        
+        if (confirm('<?php _e('Are you sure you want to delete ticket', 'altalayi-ticket'); ?> #' + ticketNumber + '? <?php _e('This action cannot be undone and will permanently delete all associated files.', 'altalayi-ticket'); ?>')) {
+            
+            $btn.prop('disabled', true).text('<?php _e('Deleting...', 'altalayi-ticket'); ?>');
+            
+            $.post(ajaxurl, {
+                action: 'altalayi_delete_ticket',
+                ticket_id: ticketId,
+                nonce: '<?php echo wp_create_nonce('altalayi_admin_nonce'); ?>'
+            })
+            .done(function(response) {
+                if (response.success) {
+                    // Remove the row from the table
+                    $btn.closest('tr').fadeOut(function() {
+                        $(this).remove();
+                    });
+                    
+                    // Show success message
+                    $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
+                        .insertAfter('.wrap h1');
+                } else {
+                    alert('<?php _e('Error:', 'altalayi-ticket'); ?> ' + response.data.message);
+                    $btn.prop('disabled', false).text('<?php _e('Delete', 'altalayi-ticket'); ?>');
+                }
+            })
+            .fail(function() {
+                alert('<?php _e('Network error occurred', 'altalayi-ticket'); ?>');
+                $btn.prop('disabled', false).text('<?php _e('Delete', 'altalayi-ticket'); ?>');
+            });
+        }
+    });
+});
+</script>

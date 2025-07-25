@@ -60,15 +60,53 @@ if (!defined('ABSPATH')) {
                     </div>
                 </div>
                 
-                <div class="form-row">
+                <div class="form-row tire-size-row">
                     <div class="form-group">
-                        <label for="tire_size"><?php _e('Tire Size', 'altalayi-ticket'); ?></label>
-                        <input type="text" id="tire_size" name="tire_size" placeholder="e.g., 225/60R16">
+                        <label for="tire_size_width"><?php _e('Tire Width', 'altalayi-ticket'); ?></label>
+                        <input type="number" id="tire_size_width" name="tire_size_width" placeholder="225" min="100" max="400">
+                        <small><?php _e('Width in millimeters (e.g., 225)', 'altalayi-ticket'); ?></small>
                     </div>
                     
                     <div class="form-group">
+                        <label for="tire_size_aspect"><?php _e('Aspect Ratio', 'altalayi-ticket'); ?></label>
+                        <input type="number" id="tire_size_aspect" name="tire_size_aspect" placeholder="60" min="25" max="100">
+                        <small><?php _e('Aspect ratio percentage (e.g., 60)', 'altalayi-ticket'); ?></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tire_size_diameter"><?php _e('Rim Diameter', 'altalayi-ticket'); ?></label>
+                        <input type="number" id="tire_size_diameter" name="tire_size_diameter" placeholder="16" min="10" max="30">
+                        <small><?php _e('Rim diameter in inches (e.g., 16)', 'altalayi-ticket'); ?></small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group tire-size-display">
+                        <label><?php _e('Complete Tire Size', 'altalayi-ticket'); ?></label>
+                        <div class="tire-size-preview">
+                            <span id="tire-size-result"><?php _e('Enter values above to see tire size format', 'altalayi-ticket'); ?></span>
+                        </div>
+                        <small><?php _e('This shows your tire size in standard format (Width/Aspect R Diameter)', 'altalayi-ticket'); ?></small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="purchase_date"><?php _e('Purchase Date', 'altalayi-ticket'); ?></label>
                         <input type="date" id="purchase_date" name="purchase_date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="purchase_location"><?php _e('Purchase Location', 'altalayi-ticket'); ?></label>
+                        <input type="text" id="purchase_location" name="purchase_location" placeholder="<?php _e('Store name or location', 'altalayi-ticket'); ?>">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mileage"><?php _e('Current Mileage', 'altalayi-ticket'); ?></label>
+                        <input type="number" id="mileage" name="mileage" placeholder="50000" min="0">
+                        <small><?php _e('Vehicle mileage in kilometers', 'altalayi-ticket'); ?></small>
                     </div>
                 </div>
             </fieldset>
@@ -204,6 +242,36 @@ if (!defined('ABSPATH')) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+}
+
+.form-row.tire-size-row {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.tire-size-display {
+    grid-column: 1 / -1;
+}
+
+.tire-size-preview {
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 8px 0;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tire-size-preview.has-values {
+    background: #d4edda;
+    border-color: #27ae60;
+    color: #155724;
 }
 
 .form-group {
@@ -408,6 +476,10 @@ if (!defined('ABSPATH')) {
         grid-template-columns: 1fr;
     }
     
+    .form-row.tire-size-row {
+        grid-template-columns: 1fr;
+    }
+    
     .altalayi-ticket-container {
         margin: 20px auto;
         padding: 0 10px;
@@ -430,6 +502,32 @@ if (!defined('ABSPATH')) {
 <script>
 // Form submission handler only - NO FILE PREVIEW FUNCTIONALITY
 jQuery(document).ready(function($) {
+    // Tire size calculator
+    function updateTireSize() {
+        var width = $('#tire_size_width').val();
+        var aspect = $('#tire_size_aspect').val();
+        var diameter = $('#tire_size_diameter').val();
+        var preview = $('#tire-size-result');
+        var previewContainer = $('.tire-size-preview');
+        
+        if (width && aspect && diameter) {
+            var tireSize = width + '/' + aspect + 'R' + diameter;
+            preview.text(tireSize);
+            previewContainer.addClass('has-values');
+        } else if (width || aspect || diameter) {
+            var partial = (width || '___') + '/' + (aspect || '__') + 'R' + (diameter || '__');
+            preview.text(partial);
+            previewContainer.removeClass('has-values');
+        } else {
+            preview.text('<?php _e("Enter values above to see tire size format", "altalayi-ticket"); ?>');
+            previewContainer.removeClass('has-values');
+        }
+    }
+    
+    // Update tire size on input change
+    $('#tire_size_width, #tire_size_aspect, #tire_size_diameter').on('input change', updateTireSize);
+    
+    // Form submission handler
     $('#altalayi-ticket-form').on('submit', function(e) {
         e.preventDefault();
         
