@@ -71,7 +71,7 @@ if (!defined('ABSPATH')) {
                     <i class="dashicons dashicons-admin-settings"></i>
                     <?php _e('Manage Statuses', 'altalayi-ticket'); ?>
                 </a>
-                <a href="<?php echo home_url('/new-ticket'); ?>" class="button" target="_blank">
+                <a href="<?php echo esc_url(altalayi_get_create_ticket_url()); ?>" class="button" target="_blank">
                     <i class="dashicons dashicons-plus-alt"></i>
                     <?php _e('Customer Portal', 'altalayi-ticket'); ?>
                 </a>
@@ -184,8 +184,8 @@ if (!defined('ABSPATH')) {
                 </div>
                 <div class="info-item">
                     <strong><?php _e('Customer Portal URL:', 'altalayi-ticket'); ?></strong>
-                    <a href="<?php echo home_url('/new-ticket'); ?>" target="_blank">
-                        <?php echo home_url('/new-ticket'); ?>
+                    <a href="<?php echo esc_url(altalayi_get_create_ticket_url()); ?>" target="_blank">
+                        <?php echo esc_url(altalayi_get_create_ticket_url()); ?>
                     </a>
                 </div>
             </div>

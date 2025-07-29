@@ -388,7 +388,7 @@ class AltalayiTicketAjax {
         wp_send_json_success(array(
             'message' => __('Ticket created successfully', 'altalayi-ticket'),
             'ticket_number' => $ticket->ticket_number,
-            'redirect_url' => home_url('/ticket/' . $ticket->ticket_number)
+            'redirect_url' => altalayi_get_ticket_url($ticket->ticket_number)
         ));
     }
     
@@ -421,7 +421,7 @@ class AltalayiTicketAjax {
         
         wp_send_json_success(array(
             'message' => __('Login successful', 'altalayi-ticket'),
-            'redirect_url' => home_url('/ticket/' . $ticket_number)
+            'redirect_url' => altalayi_get_ticket_url($ticket_number)
         ));
     }
     

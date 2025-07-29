@@ -42,7 +42,7 @@ class AltalayiTicketEmail {
      */
     private function get_admin_email() {
         $settings = get_option('altalayi_ticket_settings', array());
-        return !empty($settings['company_email']) ? $settings['company_email'] : get_option('admin_email');
+        return !empty($settings['admin_notification_email']) ? $settings['admin_notification_email'] : get_option('admin_email');
     }
     
     /**
@@ -52,6 +52,11 @@ class AltalayiTicketEmail {
         $ticket = $this->db->get_ticket($ticket_id);
         
         if (!$ticket) {
+            return false;
+        }
+        
+        // Check if notifications are enabled
+        if (!altalayi_notifications_enabled()) {
             return false;
         }
         
@@ -68,15 +73,23 @@ class AltalayiTicketEmail {
         // Send to customer
         $sent = wp_mail($ticket->customer_email, $subject, $message, $headers);
         
-        // Send notification to admin
-        $admin_email = $this->get_admin_email();
-        $admin_subject = sprintf(__('[Altalayi] New Ticket: %s', 'altalayi-ticket'), $ticket->ticket_number);
-        $admin_message = $this->get_email_template('new-ticket-admin', array(
-            'ticket' => $ticket,
-            'admin_url' => admin_url('admin.php?page=altalayi-view-ticket&ticket_id=' . $ticket_id)
-        ));
-        
-        wp_mail($admin_email, $admin_subject, $admin_message, $headers);
+        // Send notification to admin only if new ticket notifications are enabled
+        if (altalayi_notification_type_enabled('new_ticket')) {
+            $notification_emails = altalayi_get_notification_emails();
+            
+            if (!empty($notification_emails)) {
+                $admin_subject = sprintf(__('[Altalayi] New Ticket: %s', 'altalayi-ticket'), $ticket->ticket_number);
+                $admin_message = $this->get_email_template('new-ticket-admin', array(
+                    'ticket' => $ticket,
+                    'admin_url' => admin_url('admin.php?page=altalayi-view-ticket&ticket_id=' . $ticket_id)
+                ));
+                
+                // Send to all notification recipients
+                foreach ($notification_emails as $admin_email) {
+                    wp_mail($admin_email, $admin_subject, $admin_message, $headers);
+                }
+            }
+        }
         
         return $sent;
     }
@@ -192,7 +205,12 @@ class AltalayiTicketEmail {
             include $template_file;
         } else {
             // Fallback to basic template
-            include ALTALAYI_TICKET_PLUGIN_PATH . 'templates/emails/basic.php';
+            $basic_template = ALTALAYI_TICKET_PLUGIN_PATH . 'templates/emails/basic.php';
+            if (file_exists($basic_template)) {
+                include $basic_template;
+            } else {
+                echo '<h2>Email Template Error</h2><p>Unable to load email template.</p>';
+            }
         }
         
         return ob_get_clean();

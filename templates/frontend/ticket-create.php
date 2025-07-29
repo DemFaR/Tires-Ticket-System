@@ -559,7 +559,7 @@ jQuery(document).ready(function($) {
                     
                     setTimeout(function() {
                         window.location.href = response.data.redirect_url;
-                    }, 3000);
+                    }, 1500);
                 } else {
                     $('#ticket-messages').html(
                         '<div class="ticket-message error">' +

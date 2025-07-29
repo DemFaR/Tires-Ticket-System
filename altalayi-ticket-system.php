@@ -60,12 +60,12 @@ class AltalayiTicketSystem {
      * Include required files
      */
     private function include_files() {
+        require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/functions.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-database.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-admin.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-frontend.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-email.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-ajax.php';
-        require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/functions.php';
         
         // Include Elementor integration if Elementor is active
         if (did_action('elementor/loaded')) {

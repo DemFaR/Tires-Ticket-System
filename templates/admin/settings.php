@@ -66,6 +66,11 @@ $defaults = array(
 // Merge with defaults
 $settings = wp_parse_args($settings, $defaults);
 
+// Ensure notification_roles is always an array
+if (!isset($settings['notification_roles']) || !is_array($settings['notification_roles'])) {
+    $settings['notification_roles'] = array('administrator');
+}
+
 // Get all pages for dropdown
 $pages = get_pages();
 

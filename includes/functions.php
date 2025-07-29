@@ -255,7 +255,7 @@ function altalayi_clean_text($text) {
  * Get ticket URL for customer
  */
 function altalayi_get_ticket_url($ticket_number) {
-    return home_url('/ticket/' . $ticket_number);
+    return altalayi_get_ticket_view_url($ticket_number);
 }
 
 /**
@@ -338,9 +338,16 @@ function altalayi_get_notification_emails() {
     
     // Get emails from selected roles
     $notification_roles = altalayi_get_option('notification_roles', array('administrator'));
+    
+    // Ensure notification_roles is an array
+    if (!is_array($notification_roles)) {
+        $notification_roles = array('administrator');
+    }
+    
     if (!empty($notification_roles) && is_array($notification_roles)) {
         foreach ($notification_roles as $role) {
             $users = get_users(array('role' => $role, 'fields' => 'user_email'));
+            
             foreach ($users as $user_email) {
                 if (!empty($user_email) && is_email($user_email) && !in_array($user_email, $emails)) {
                     $emails[] = $user_email;

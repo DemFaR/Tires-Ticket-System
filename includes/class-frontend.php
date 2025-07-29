@@ -16,7 +16,6 @@ class AltalayiTicketFrontend {
     private $current_phone;
     
     public function __construct() {
-        error_log("AltalayiTicketFrontend: Constructor called");
         $this->db = new AltalayiTicketDatabase();
         
         add_action('init', array($this, 'init'));
