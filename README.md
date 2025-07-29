@@ -202,7 +202,41 @@ The plugin creates the following tables:
 
 ## Changelog
 
-### Version 1.1.0 (Current)
+### Version 1.3.0 (Current)
+#### 🌐 Polylang Integration & URL Routing
+- **Polylang Compatibility**: Seamless integration with Polylang multilingual plugin
+- **Language-Aware URL Routing**: Enhanced URL functions with automatic language detection
+- **Arabic Page Settings**: Optional dedicated Arabic pages in admin settings
+- **Multilingual URL Structure**: Support for both parameter-based and path-based language routing
+- **Language Detection**: Automatic detection from URL parameters, paths, and WordPress locale
+
+#### 🎛️ Admin Enhancements
+- **Arabic Page Configuration**: New admin settings for separate Arabic pages
+- **Frontend Pages Settings**: Enhanced configuration for multilingual page setup
+- **Language-Specific URLs**: Dedicated settings for Arabic versions of create, access, and view pages
+- **Fallback URL System**: Automatic fallback to main pages with language parameters
+
+#### 🚀 URL Functions Enhancement
+- **Enhanced URL Functions**: Updated URL functions with language support
+- **Language Parameter Support**: Functions now accept language parameters for explicit language targeting
+- **Automatic Language Context**: URLs automatically adapt based on current language context
+- **Polylang URL Integration**: Native support for Polylang's URL structure
+
+#### 🗑️ Code Cleanup
+- **Removed Language Switcher**: Removed custom language switcher in favor of Polylang's native switcher
+- **Simplified Interface**: Cleaner frontend templates without redundant language switching
+- **Optimized Functions**: Removed unused language switcher functions and templates
+
+### Version 1.2.0
+#### 🌐 Internationalization & Localization
+- **Complete Arabic Translation**: Added comprehensive Arabic localization for all frontend components
+- **Loco Translate Integration**: Created professional translation template (POT file) with 200+ translatable strings
+- **Frontend Translation Focus**: Fully translated customer-facing interfaces
+- **Arabic Language Pack**: Complete Arabic PO/MO files ready for production use
+- **Cultural Adaptation**: Properly localized text for Arabic-speaking users
+- **Right-to-Left (RTL) Ready**: Compatible with RTL text direction
+
+### Version 1.1.0
 #### 🚀 Major Improvements
 - **Fixed Admin Email Notifications**: Resolved issue where admin emails weren't being sent for new tickets
 - **Enhanced Role-Based Notifications**: Improved role-based notification system with better reliability
@@ -288,7 +322,7 @@ Developed by Mohamed Ashraf for Altalayi Company.
 
 ---
 
-For more information, visit [Altalayi Company](https://altalayi.com)
+For more information, visit [Altalayi Company](https://altalayi.com.sa)
 
 ## Features
 
