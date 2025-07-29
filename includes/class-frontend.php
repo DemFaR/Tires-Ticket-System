@@ -16,6 +16,7 @@ class AltalayiTicketFrontend {
     private $current_phone;
     
     public function __construct() {
+        error_log("AltalayiTicketFrontend: Constructor called");
         $this->db = new AltalayiTicketDatabase();
         
         add_action('init', array($this, 'init'));
@@ -44,6 +45,13 @@ class AltalayiTicketFrontend {
      */
     public function get_access_ticket_url() {
         return altalayi_get_access_ticket_url();
+    }
+    
+    /**
+     * Get the URL for the ticket view page from settings
+     */
+    public function get_ticket_view_url($ticket_number = '') {
+        return altalayi_get_ticket_view_url($ticket_number);
     }
     
     /**
@@ -343,7 +351,12 @@ class AltalayiTicketFrontend {
         $ticket = $this->db->get_ticket_by_credentials($ticket_number, $phone);
         
         if (!$ticket) {
-            echo '<h1>' . __('Ticket not found', 'altalayi-ticket') . '</h1>';
+            echo '<h1>' . __('Ticket not found', 'altalayi-ticket') . '</h1>
+             <p>
+                        <a href="'.esc_url(home_url('')).'" class="button button-primary">
+                            ' . __('Return to home page', 'altalayi-ticket') . '
+                        </a>
+                    </p>';
             return;
         }
         
@@ -490,6 +503,12 @@ class AltalayiTicketFrontend {
         
         // Auto-detect from session or URL parameters if enabled
         if ($atts['auto_detect'] === 'true') {
+            // Start session if not already started
+            if (!session_id()) {
+                session_start();
+            }
+            
+            // Check URL parameters first
             if (empty($atts['ticket_number']) && isset($_GET['ticket'])) {
                 $atts['ticket_number'] = sanitize_text_field($_GET['ticket']);
             }
@@ -497,13 +516,29 @@ class AltalayiTicketFrontend {
                 $atts['phone'] = sanitize_text_field($_GET['phone']);
             }
             
-            // Check session for logged-in ticket
-            if (!session_id()) {
-                session_start();
+            // If still no ticket number, check all session variables for logged-in tickets
+            if (empty($atts['ticket_number'])) {
+                foreach ($_SESSION as $key => $value) {
+                    if (strpos($key, 'altalayi_ticket_') === 0) {
+                        $ticket_number = str_replace('altalayi_ticket_', '', $key);
+                        $phone = $value;
+                        
+                        // Verify this ticket still exists and is accessible
+                        $test_ticket = $this->db->get_ticket_by_credentials($ticket_number, $phone);
+                        if ($test_ticket) {
+                            $atts['ticket_number'] = $ticket_number;
+                            $atts['phone'] = $phone;
+                            break; // Use the first valid ticket found
+                        }
+                    }
+                }
             }
-            if (empty($atts['ticket_number']) && !empty($_SESSION['altalayi_current_ticket'])) {
-                $atts['ticket_number'] = $_SESSION['altalayi_current_ticket'];
-                $atts['phone'] = $_SESSION['altalayi_current_phone'];
+            
+            // If we have ticket number but no phone, try to get phone from session
+            if (!empty($atts['ticket_number']) && empty($atts['phone'])) {
+                if (isset($_SESSION['altalayi_ticket_' . $atts['ticket_number']])) {
+                    $atts['phone'] = $_SESSION['altalayi_ticket_' . $atts['ticket_number']];
+                }
             }
         }
         
@@ -513,7 +548,7 @@ class AltalayiTicketFrontend {
             <div class="<?php echo esc_attr($atts['container_class']); ?>">
                 <div class="altalayi-error-message">
                     <p><?php _e('Please login to view your ticket or provide ticket credentials.', 'altalayi-ticket'); ?></p>
-                    <p><a href="#" class="altalayi-login-link"><?php _e('Click here to login', 'altalayi-ticket'); ?></a></p>
+                    <p><a href="<?php echo esc_url($this->get_access_ticket_url()); ?>" class="altalayi-login-link button button-primary"><?php _e('Click here to login', 'altalayi-ticket'); ?></a></p>
                 </div>
             </div>
             <?php
@@ -608,7 +643,7 @@ class AltalayiTicketFrontend {
         wp_send_json_success(array(
             'message' => __('Ticket created successfully', 'altalayi-ticket'),
             'ticket_number' => $ticket->ticket_number,
-            'redirect_url' => home_url('/ticket/' . $ticket->ticket_number)
+            'redirect_url' => $this->get_ticket_view_url($ticket->ticket_number)
         ));
     }
     
@@ -637,9 +672,12 @@ class AltalayiTicketFrontend {
         session_start();
         $_SESSION['altalayi_ticket_' . $ticket_number] = $phone;
         
+        // Get the redirect URL
+        $redirect_url = $this->get_ticket_view_url($ticket_number);
+        
         wp_send_json_success(array(
             'message' => __('Login successful', 'altalayi-ticket'),
-            'redirect_url' => home_url('/ticket/' . $ticket_number)
+            'redirect_url' => $redirect_url
         ));
     }
     

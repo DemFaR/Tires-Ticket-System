@@ -96,14 +96,34 @@ if (!defined('ABSPATH')) {
                 <h3><?php _e('Contact Support', 'altalayi-ticket'); ?></h3>
                 <p><?php _e('If you\'re having trouble accessing your ticket, please contact our support team:', 'altalayi-ticket'); ?></p>
                 <div class="contact-info">
+                    <?php
+                    // Get company settings from the settings array
+                    $settings = get_option('altalayi_ticket_settings', array());
+                    $company_email = isset($settings['company_email']) ? $settings['company_email'] : '';
+                    $company_phone = isset($settings['company_phone']) ? $settings['company_phone'] : '';
+                    $company_website = isset($settings['company_website']) ? $settings['company_website'] : '';
+                    ?>
+                    
                     <span class="contact-item">
                         <i class="dashicons dashicons-email"></i>
-                        support@altalayi.com
+                        <a href="mailto:<?php echo esc_attr($company_email); ?>" style="color: inherit; text-decoration: none;">
+                            <?php echo esc_html($company_email); ?>
+                        </a>
                     </span>
                     <span class="contact-item">
                         <i class="dashicons dashicons-phone"></i>
-                        +966-XXX-XXXX
+                        <a href="tel:<?php echo esc_attr($company_phone); ?>" style="color: inherit; text-decoration: none;">
+                            <?php echo esc_html($company_phone); ?>
+                        </a>
                     </span>
+                    <?php if (!empty($company_website)): ?>
+                    <span class="contact-item">
+                        <i class="dashicons dashicons-admin-site"></i>
+                        <a href="<?php echo esc_url($company_website); ?>" target="_blank" style="color: inherit; text-decoration: none;">
+                            <?php echo esc_html(str_replace(['http://', 'https://'], '', $company_website)); ?>
+                        </a>
+                    </span>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -401,7 +421,7 @@ jQuery(document).ready(function($) {
         var form = $(this);
         var submitBtn = form.find('.login-btn');
         var formData = {
-            action: 'altalayi_login_ticket',
+            action: 'login_ticket',
             ticket_number: $('#ticket_number').val(),
             phone: $('#phone').val(),
             nonce: $('input[name="nonce"]').val()
@@ -437,7 +457,7 @@ jQuery(document).ready(function($) {
                     );
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 $('#login-messages').html(
                     '<div class="login-message error">' +
                     '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +

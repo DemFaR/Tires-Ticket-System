@@ -66,6 +66,11 @@ class AltalayiTicketSystem {
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-email.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-ajax.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/functions.php';
+        
+        // Include Elementor integration if Elementor is active
+        if (did_action('elementor/loaded')) {
+            require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-elementor.php';
+        }
     }
     
     /**
@@ -192,6 +197,29 @@ function altalayi_get_access_ticket_url() {
     
     // Fallback to old URL structure
     return home_url('/ticket-login');
+}
+
+/**
+ * Get the URL for the ticket view page from settings
+ */
+function altalayi_get_ticket_view_url($ticket_number = '') {
+    $settings = get_option('altalayi_ticket_settings', array());
+    $page_id = $settings['frontend_view_page'] ?? '';
+    
+    if ($page_id && get_post_status($page_id) === 'publish') {
+        $url = get_permalink($page_id);
+        // Add ticket number as query parameter if provided
+        if ($ticket_number) {
+            $url = add_query_arg('ticket', $ticket_number, $url);
+        }
+        return $url;
+    }
+    
+    // Fallback to old URL structure
+    if ($ticket_number) {
+        return home_url('/ticket/' . $ticket_number);
+    }
+    return home_url('/ticket/');
 }
 
 // Initialize the plugin

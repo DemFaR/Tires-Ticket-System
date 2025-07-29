@@ -1,0 +1,251 @@
+/**
+ * Elementor Integration Styles for Altalayi Ticket System
+ */
+
+/* Elementor Widget Base Styles */
+.altalayi-elementor-widget {
+    width: 100%;
+    max-width: 100%;
+}
+
+.altalayi-elementor-widget .altalayi-ticket-form,
+.altalayi-elementor-widget .altalayi-ticket-login,
+.altalayi-elementor-widget .altalayi-ticket-view-container {
+    max-width: 100%;
+    margin: 0;
+}
+
+/* Remove default container styles when in Elementor */
+.altalayi-elementor-widget .form-container,
+.altalayi-elementor-widget .login-wrapper,
+.altalayi-elementor-widget .ticket-view-wrapper {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+}
+
+/* Elementor Preview Notices */
+.elementor-preview-notice {
+    background: #f0f8ff;
+    border: 2px dashed #3498db;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    color: #2c3e50;
+    font-size: 14px;
+    margin: 20px 0;
+}
+
+.elementor-preview-notice i {
+    color: #3498db;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+/* Form Styles in Elementor */
+.altalayi-elementor-widget .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .altalayi-elementor-widget .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Button Styles Override for Elementor */
+.altalayi-elementor-widget .btn,
+.altalayi-elementor-widget .submit-btn,
+.altalayi-elementor-widget .login-btn {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ticket View Responsive Design in Elementor */
+.altalayi-elementor-widget .ticket-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+}
+
+@media (min-width: 768px) {
+    .altalayi-elementor-widget .ticket-header {
+        flex-direction: row;
+        text-align: left;
+        justify-content: space-between;
+    }
+}
+
+.altalayi-elementor-widget .ticket-actions {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .altalayi-elementor-widget .ticket-actions {
+        flex-direction: row;
+        width: auto;
+    }
+}
+
+/* Info Grid Responsive */
+.altalayi-elementor-widget .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 576px) {
+    .altalayi-elementor-widget .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .altalayi-elementor-widget .info-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+/* Attachments Grid in Elementor */
+.altalayi-elementor-widget .attachments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+/* Login Form in Elementor */
+.altalayi-elementor-widget .login-forms {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+@media (min-width: 768px) {
+    .altalayi-elementor-widget .login-forms {
+        grid-template-columns: 1fr auto 1fr;
+        align-items: start;
+    }
+}
+
+.altalayi-elementor-widget .divider {
+    grid-column: 2;
+    align-self: center;
+}
+
+/* Timeline Responsive */
+.altalayi-elementor-widget .updates-timeline {
+    padding-left: 20px;
+}
+
+@media (min-width: 768px) {
+    .altalayi-elementor-widget .updates-timeline {
+        padding-left: 30px;
+    }
+}
+
+/* File Upload Area */
+.altalayi-elementor-widget .file-upload-area {
+    border: 2px dashed #bdc3c7;
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.altalayi-elementor-widget .file-upload-area:hover,
+.altalayi-elementor-widget .file-upload-area.dragover {
+    border-color: #3498db;
+    background-color: #f0f8ff;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 767px) {
+    .altalayi-elementor-widget .info-section {
+        padding: 20px 15px;
+    }
+    
+    .altalayi-elementor-widget .ticket-header {
+        padding: 20px 15px;
+    }
+    
+    .altalayi-elementor-widget .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .altalayi-elementor-widget .attachment-item {
+        padding: 10px;
+    }
+}
+
+/* Dark Mode Support for Elementor */
+.elementor-widget-altalayi_ticket_form,
+.elementor-widget-altalayi_ticket_login,
+.elementor-widget-altalayi_ticket_view {
+    color: inherit;
+}
+
+/* Custom Elementor Controls Integration */
+.altalayi-elementor-widget .altalayi-form-title,
+.altalayi-elementor-widget .altalayi-login-title {
+    margin: 0 0 25px 0;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Status Badge in Elementor */
+.altalayi-elementor-widget .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Employee Response Styling */
+.altalayi-elementor-widget .employee-response-item {
+    background: #f8f9fa;
+    border-left: 4px solid #3498db;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.altalayi-elementor-widget .employee-response-item .response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Print Styles */
+@media print {
+    .altalayi-elementor-widget .ticket-actions,
+    .altalayi-elementor-widget .customer-response-section {
+        display: none !important;
+    }
+}
+
+/* RTL Support */
+.rtl .altalayi-elementor-widget .updates-timeline {
+    padding-right: 30px;
+    padding-left: 0;
+}
+
+.rtl .altalayi-elementor-widget .update-marker {
+    right: -37px;
+    left: auto;
+}

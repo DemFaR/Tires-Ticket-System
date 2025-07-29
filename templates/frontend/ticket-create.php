@@ -27,19 +27,19 @@ if (!defined('ABSPATH')) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer_name"><?php _e('Full Name', 'altalayi-ticket'); ?> <span class="required">*</span></label>
-                        <input type="text" id="customer_name" name="customer_name" required>
+                        <input type="text" id="customer_name" name="customer_name" style="width: 90%" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="customer_phone"><?php _e('Phone Number', 'altalayi-ticket'); ?> <span class="required">*</span></label>
-                        <input type="tel" id="customer_phone" name="customer_phone" required>
+                        <input type="tel" id="customer_phone" name="customer_phone" style="width: 90%" required>
                         <small><?php _e('This will be used to access your ticket', 'altalayi-ticket'); ?></small>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="customer_email"><?php _e('Email Address', 'altalayi-ticket'); ?> <span class="required">*</span></label>
-                    <input type="email" id="customer_email" name="customer_email" required>
+                    <input type="email" id="customer_email" name="customer_email" style="width: 90%" required>
                     <small><?php _e('We will send ticket updates to this email', 'altalayi-ticket'); ?></small>
                 </div>
             </fieldset>
@@ -51,31 +51,31 @@ if (!defined('ABSPATH')) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="tire_brand"><?php _e('Tire Brand', 'altalayi-ticket'); ?></label>
-                        <input type="text" id="tire_brand" name="tire_brand" placeholder="e.g., Bridgestone, Michelin">
+                        <input type="text" id="tire_brand" name="tire_brand" style="width: 90%" placeholder="e.g., Bridgestone, Dayton">
                     </div>
                     
                     <div class="form-group">
                         <label for="tire_model"><?php _e('Tire Model', 'altalayi-ticket'); ?></label>
-                        <input type="text" id="tire_model" name="tire_model" placeholder="e.g., Turanza T005">
+                        <input type="text" id="tire_model" name="tire_model" style="width: 90%" placeholder="e.g., Turanza T005">
                     </div>
                 </div>
                 
                 <div class="form-row tire-size-row">
                     <div class="form-group">
                         <label for="tire_size_width"><?php _e('Tire Width', 'altalayi-ticket'); ?></label>
-                        <input type="number" id="tire_size_width" name="tire_size_width" placeholder="225" min="100" max="400">
+                        <input type="number" id="tire_size_width" name="tire_size_width" style="width: 90%" placeholder="225" min="100" max="400">
                         <small><?php _e('Width in millimeters (e.g., 225)', 'altalayi-ticket'); ?></small>
                     </div>
                     
                     <div class="form-group">
                         <label for="tire_size_aspect"><?php _e('Aspect Ratio', 'altalayi-ticket'); ?></label>
-                        <input type="number" id="tire_size_aspect" name="tire_size_aspect" placeholder="60" min="25" max="100">
+                        <input type="number" id="tire_size_aspect" name="tire_size_aspect" style="width: 90%" placeholder="60" min="25" max="100">
                         <small><?php _e('Aspect ratio percentage (e.g., 60)', 'altalayi-ticket'); ?></small>
                     </div>
                     
                     <div class="form-group">
                         <label for="tire_size_diameter"><?php _e('Rim Diameter', 'altalayi-ticket'); ?></label>
-                        <input type="number" id="tire_size_diameter" name="tire_size_diameter" placeholder="16" min="10" max="30">
+                        <input type="number" id="tire_size_diameter" name="tire_size_diameter" style="width: 90%" placeholder="16" min="10" max="30">
                         <small><?php _e('Rim diameter in inches (e.g., 16)', 'altalayi-ticket'); ?></small>
                     </div>
                 </div>
@@ -93,19 +93,19 @@ if (!defined('ABSPATH')) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="purchase_date"><?php _e('Purchase Date', 'altalayi-ticket'); ?></label>
-                        <input type="date" id="purchase_date" name="purchase_date">
+                        <input type="date" id="purchase_date" name="purchase_date" style="width: 90%">
                     </div>
                     
                     <div class="form-group">
                         <label for="purchase_location"><?php _e('Purchase Location', 'altalayi-ticket'); ?></label>
-                        <input type="text" id="purchase_location" name="purchase_location" placeholder="<?php _e('Store name or location', 'altalayi-ticket'); ?>">
+                        <input type="text" id="purchase_location" name="purchase_location" style="width: 90%" placeholder="<?php _e('Store name or location', 'altalayi-ticket'); ?>">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="mileage"><?php _e('Current Mileage', 'altalayi-ticket'); ?></label>
-                        <input type="number" id="mileage" name="mileage" placeholder="50000" min="0">
+                        <input type="number" id="mileage" name="mileage" style="width: 90%" placeholder="50000" min="0">
                         <small><?php _e('Vehicle mileage in kilometers', 'altalayi-ticket'); ?></small>
                     </div>
                 </div>

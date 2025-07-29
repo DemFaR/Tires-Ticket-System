@@ -176,7 +176,7 @@ if (!defined('ABSPATH')) {
         <div class="no-tickets">
             <p><?php _e('No open tickets found.', 'altalayi-ticket'); ?></p>
             <p>
-                <a href="<?php echo home_url('/new-ticket'); ?>" target="_blank" class="button button-primary">
+                <a href="<?php echo esc_url(altalayi_get_create_ticket_url()); ?>" target="_blank" class="button button-primary">
                     <?php _e('Customer Portal', 'altalayi-ticket'); ?>
                 </a>
             </p>

@@ -17,6 +17,7 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['altalayi_settings_nonce']
         'company_website' => esc_url_raw($_POST['company_website']),
         'frontend_create_page' => intval($_POST['frontend_create_page']),
         'frontend_access_page' => intval($_POST['frontend_access_page']),
+        'frontend_view_page' => intval($_POST['frontend_view_page']),
         'enable_email_notifications' => isset($_POST['enable_email_notifications']) ? 1 : 0,
         'admin_notification_email' => sanitize_email($_POST['admin_notification_email']),
         'notify_on_new_ticket' => isset($_POST['notify_on_new_ticket']) ? 1 : 0,
@@ -47,6 +48,7 @@ $defaults = array(
     'company_website' => home_url(),
     'frontend_create_page' => '',
     'frontend_access_page' => '',
+    'frontend_view_page' => '',
     'enable_email_notifications' => 1,
     'admin_notification_email' => get_option('admin_email'),
     'notify_on_new_ticket' => 1,
@@ -222,6 +224,25 @@ $all_roles = $wp_roles->roles;
                         </p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="frontend_view_page"><?php _e('Ticket View Page', 'altalayi-ticket'); ?></label>
+                    </th>
+                    <td>
+                        <select id="frontend_view_page" name="frontend_view_page">
+                            <option value=""><?php _e('Use default /ticket/ URL', 'altalayi-ticket'); ?></option>
+                            <?php foreach ($pages as $page): ?>
+                                <option value="<?php echo esc_attr($page->ID); ?>" 
+                                        <?php selected($settings['frontend_view_page'], $page->ID); ?>>
+                                    <?php echo esc_html($page->post_title); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">
+                            <?php _e('Page where customers will view their ticket details. Add the shortcode [altalayi_ticket_view auto_detect="true"] to this page. If not selected, the default /ticket/ URL will be used.', 'altalayi-ticket'); ?>
+                        </p>
+                    </td>
+                </tr>
             </table>
             
             <h3><?php _e('Available Shortcodes', 'altalayi-ticket'); ?></h3>
@@ -242,8 +263,8 @@ $all_roles = $wp_roles->roles;
                         
                         <div class="shortcode-info">
                             <h4><?php _e('Ticket View', 'altalayi-ticket'); ?></h4>
-                            <code>[altalayi_ticket_view]</code>
-                            <p><?php _e('Displays ticket details (automatically used after login).', 'altalayi-ticket'); ?></p>
+                            <code>[altalayi_ticket_view auto_detect="true"]</code>
+                            <p><?php _e('Displays ticket details with automatic detection. Use this shortcode on your custom ticket view page.', 'altalayi-ticket'); ?></p>
                         </div>
                     </td>
                 </tr>

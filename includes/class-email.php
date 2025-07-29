@@ -24,6 +24,28 @@ class AltalayiTicketEmail {
     }
     
     /**
+     * Get email headers based on settings
+     */
+    private function get_email_headers() {
+        $settings = get_option('altalayi_ticket_settings', array());
+        $from_email = !empty($settings['company_email']) ? $settings['company_email'] : 'support@altalayi.com';
+        $from_name = !empty($settings['company_name']) ? $settings['company_name'] : 'Altalayi Support';
+        
+        return array(
+            'From: ' . $from_name . ' <' . $from_email . '>',
+            'Reply-To: ' . $from_email
+        );
+    }
+    
+    /**
+     * Get admin notification email
+     */
+    private function get_admin_email() {
+        $settings = get_option('altalayi_ticket_settings', array());
+        return !empty($settings['company_email']) ? $settings['company_email'] : get_option('admin_email');
+    }
+    
+    /**
      * Send ticket created notification
      */
     public function send_ticket_created_notification($ticket_id) {
@@ -37,20 +59,17 @@ class AltalayiTicketEmail {
         
         $message = $this->get_email_template('ticket-created', array(
             'ticket' => $ticket,
-            'login_url' => home_url('/ticket-login'),
-            'view_url' => home_url('/ticket/' . $ticket->ticket_number)
+            'login_url' => altalayi_get_access_ticket_url(),
+            'view_url' => altalayi_get_access_ticket_url()
         ));
         
-        $headers = array(
-            'From: Altalayi Support <support@altalayi.com>',
-            'Reply-To: support@altalayi.com'
-        );
+        $headers = $this->get_email_headers();
         
         // Send to customer
         $sent = wp_mail($ticket->customer_email, $subject, $message, $headers);
         
         // Send notification to admin
-        $admin_email = get_option('admin_email');
+        $admin_email = $this->get_admin_email();
         $admin_subject = sprintf(__('[Altalayi] New Ticket: %s', 'altalayi-ticket'), $ticket->ticket_number);
         $admin_message = $this->get_email_template('new-ticket-admin', array(
             'ticket' => $ticket,
@@ -76,13 +95,10 @@ class AltalayiTicketEmail {
         
         $message = $this->get_email_template('status-update', array(
             'ticket' => $ticket,
-            'view_url' => home_url('/ticket/' . $ticket->ticket_number)
+            'view_url' => altalayi_get_ticket_view_url($ticket->ticket_number)
         ));
         
-        $headers = array(
-            'From: Altalayi Support <support@altalayi.com>',
-            'Reply-To: support@altalayi.com'
-        );
+        $headers = $this->get_email_headers();
         
         return wp_mail($ticket->customer_email, $subject, $message, $headers);
     }
@@ -111,10 +127,7 @@ class AltalayiTicketEmail {
             'admin_url' => admin_url('admin.php?page=altalayi-view-ticket&ticket_id=' . $ticket_id)
         ));
         
-        $headers = array(
-            'From: Altalayi Support <support@altalayi.com>',
-            'Reply-To: support@altalayi.com'
-        );
+        $headers = $this->get_email_headers();
         
         return wp_mail($assigned_user->user_email, $subject, $message, $headers);
     }
@@ -138,12 +151,31 @@ class AltalayiTicketEmail {
             'admin_url' => admin_url('admin.php?page=altalayi-view-ticket&ticket_id=' . $ticket_id)
         ));
         
-        $headers = array(
-            'From: Altalayi Support <support@altalayi.com>',
-            'Reply-To: support@altalayi.com'
-        );
+        $headers = $this->get_email_headers();
         
         return wp_mail($assigned_user->user_email, $subject, $message, $headers);
+    }
+    
+    /**
+     * Send employee response notification to customer
+     */
+    public function send_employee_response_notification($ticket_id) {
+        $ticket = $this->db->get_ticket($ticket_id);
+        
+        if (!$ticket) {
+            return false;
+        }
+        
+        $subject = sprintf(__('[Altalayi] New Response for Ticket: %s', 'altalayi-ticket'), $ticket->ticket_number);
+        
+        $message = $this->get_email_template('employee-response', array(
+            'ticket' => $ticket,
+            'view_url' => altalayi_get_ticket_view_url($ticket->ticket_number)
+        ));
+        
+        $headers = $this->get_email_headers();
+        
+        return wp_mail($ticket->customer_email, $subject, $message, $headers);
     }
     
     /**
@@ -170,12 +202,15 @@ class AltalayiTicketEmail {
      * Get email header
      */
     public function get_email_header() {
+        $settings = get_option('altalayi_ticket_settings', array());
+        $company_name = !empty($settings['company_name']) ? $settings['company_name'] : 'Altalayi';
+        
         return '
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Altalayi Support</title>
+            <title>' . esc_html($company_name) . ' Support</title>
             <style>
                 body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
                 .email-container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -191,7 +226,7 @@ class AltalayiTicketEmail {
         <body>
             <div class="email-container">
                 <div class="email-header">
-                    <h1>Altalayi Support</h1>
+                    <h1>' . esc_html($company_name) . ' Support</h1>
                     <p>Professional Tire Support Services</p>
                 </div>
                 <div class="email-body">
@@ -202,12 +237,16 @@ class AltalayiTicketEmail {
      * Get email footer
      */
     public function get_email_footer() {
+        $settings = get_option('altalayi_ticket_settings', array());
+        $company_name = !empty($settings['company_name']) ? $settings['company_name'] : 'Altalayi Company';
+        $support_email = !empty($settings['company_email']) ? $settings['company_email'] : 'support@altalayi.com';
+        
         return '
                 </div>
                 <div class="email-footer">
-                    <p>&copy; ' . date('Y') . ' Altalayi Company. All rights reserved.</p>
+                    <p>&copy; ' . date('Y') . ' ' . esc_html($company_name) . '. All rights reserved.</p>
                     <p>This is an automated message, please do not reply to this email.</p>
-                    <p>For support, contact us at: support@altalayi.com</p>
+                    <p>For support, contact us at: ' . esc_html($support_email) . '</p>
                 </div>
             </div>
         </body>

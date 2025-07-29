@@ -300,6 +300,12 @@ class AltalayiTicketAjax {
         if ($result) {
             $user = get_user_by('ID', get_current_user_id());
             
+            // Send email notification to customer if note is visible to them
+            if ($visible_to_customer) {
+                $email = new AltalayiTicketEmail();
+                $email->send_employee_response_notification($ticket_id);
+            }
+            
             wp_send_json_success(array(
                 'message' => __('Note added successfully', 'altalayi-ticket'),
                 'note_html' => $this->format_note_html($note, $user->display_name, current_time('mysql'), $visible_to_customer)

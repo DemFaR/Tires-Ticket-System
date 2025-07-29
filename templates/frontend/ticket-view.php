@@ -6,8 +6,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
-get_header();
 ?>
 
 <div class="altalayi-ticket-view-container">
@@ -197,6 +195,7 @@ get_header();
                             <small><?php _e('Maximum 5MB per file. Images and PDF files accepted.', 'altalayi-ticket'); ?></small>
                         </div>
                     </div>
+                    <div id="additional-files-preview" class="file-preview"></div>
                 </div>
                 
                 <div class="form-actions">
@@ -215,13 +214,59 @@ get_header();
         </div>
         <?php endif; ?>
         
+        <!-- Employee Responses -->
+        <?php
+        // Filter notes from employees (oldest first)
+        $employee_notes = array_filter($updates, function($update) {
+            return $update->update_type === 'note' && !empty($update->notes);
+        });
+        // Sort oldest first
+        usort($employee_notes, function($a, $b) {
+            return strtotime($a->update_date) - strtotime($b->update_date);
+        });
+        ?>
+        
+        <?php if (!empty($employee_notes)): ?>
+        <div class="info-section">
+            <h2><?php _e('Employee Responses', 'altalayi-ticket'); ?></h2>
+            
+            <div class="employee-responses">
+                <?php foreach ($employee_notes as $note): ?>
+                    <div class="employee-response-item">
+                        <div class="response-header">
+                            <span class="response-author">
+                                <i class="dashicons dashicons-admin-users"></i>
+                                <?php echo esc_html($note->updated_by_name ?: __('Support Team', 'altalayi-ticket')); ?>
+                            </span>
+                            <span class="response-date"><?php echo altalayi_format_date($note->update_date); ?></span>
+                        </div>
+                        <div class="response-content">
+                            <?php echo nl2br(esc_html($note->notes)); ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
         <!-- Ticket Updates -->
         <div class="info-section">
             <h2><?php _e('Ticket Updates', 'altalayi-ticket'); ?></h2>
             
             <?php if (!empty($updates)): ?>
+                <?php
+                // Filter out notes and sort newest first for ticket updates
+                $ticket_updates = array_filter($updates, function($update) {
+                    return $update->update_type !== 'note' || empty($update->notes);
+                });
+                // Sort newest first
+                usort($ticket_updates, function($a, $b) {
+                    return strtotime($b->update_date) - strtotime($a->update_date);
+                });
+                ?>
+                
                 <div class="updates-timeline">
-                    <?php foreach ($updates as $update): ?>
+                    <?php foreach ($ticket_updates as $update): ?>
                         <div class="update-item <?php echo $update->update_type; ?>">
                             <div class="update-marker"></div>
                             <div class="update-content">
@@ -391,9 +436,8 @@ get_header();
 }
 
 .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .info-item {
@@ -623,6 +667,52 @@ get_header();
     background: #27ae60;
 }
 
+.employee-responses {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.employee-response-item {
+    background: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    border-left: 4px solid #3498db;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.employee-response-item .response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.employee-response-item .response-author {
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.employee-response-item .response-author i {
+    color: #3498db;
+}
+
+.employee-response-item .response-date {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.employee-response-item .response-content {
+    color: #34495e;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
 .no-updates {
     text-align: center;
     padding: 40px 20px;
@@ -741,6 +831,69 @@ get_header();
     to { transform: rotate(360deg); }
 }
 
+.file-upload-area.dragover {
+    border-color: #3498db;
+    background-color: #f0f8ff;
+}
+
+.file-preview {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.file-preview-item {
+    background: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.file-preview-item img {
+    max-width: 100%;
+    max-height: 80px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.file-preview-item .file-name {
+    font-size: 12px;
+    margin-bottom: 4px;
+    word-break: break-all;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.file-preview-item .file-size {
+    font-size: 11px;
+    color: #7f8c8d;
+}
+
+.file-remove-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.file-remove-btn:hover {
+    background: #c0392b;
+}
+
 @media print {
     .ticket-actions,
     .customer-response-section {
@@ -806,10 +959,229 @@ function closeImageModal() {
 // Close modal when clicking outside
 window.onclick = function(event) {
     var modal = document.getElementById('imageModal');
-    if (event.target == modal) {
+    if (modal && event.target == modal) {
         modal.style.display = 'none';
     }
 }
+
+// File preview functionality for additional files - Vanilla JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    var fileInput = document.getElementById('additional_files');
+    var previewContainer = document.getElementById('additional-files-preview');
+    
+    if (!fileInput || !previewContainer) {
+        return;
+    }
+    
+    // File input change handler
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            handleFileSelection(this.files, previewContainer);
+        } else {
+            previewContainer.innerHTML = '';
+        }
+    });
+    
+    // Drag and drop handlers
+    var uploadArea = document.querySelector('.file-upload-area');
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('dragover');
+            
+            var files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelection(files, previewContainer);
+            }
+        });
+    }
+    
+    // File remove handler using event delegation
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('file-remove-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var item = e.target.closest('.file-preview-item');
+            item.remove();
+            
+            // Clear the input if no files remain
+            if (previewContainer.querySelectorAll('.file-preview-item').length === 0) {
+                fileInput.value = '';
+            }
+        }
+    });
+    
+    /**
+     * Handle file selection and preview
+     */
+    function handleFileSelection(files, container) {
+        // Clear existing previews
+        container.innerHTML = '';
+        container.style.display = 'grid';
+        
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            
+            // Validate file
+            if (!validateFile(file)) {
+                continue;
+            }
+            
+            // Create preview item
+            var previewItem = createFilePreviewItem(file);
+            container.appendChild(previewItem);
+            
+            // Generate preview for images
+            if (file.type.startsWith('image/')) {
+                generateImagePreview(file, previewItem);
+            } else {
+                // Add a generic file icon for non-images
+                var fileIcon = document.createElement('div');
+                fileIcon.className = 'file-icon';
+                fileIcon.textContent = '📄';
+                fileIcon.style.fontSize = '24px';
+                fileIcon.style.marginBottom = '8px';
+                previewItem.insertBefore(fileIcon, previewItem.firstChild);
+            }
+        }
+    }
+    
+    /**
+     * Validate file
+     */
+    function validateFile(file) {
+        var maxSize = 5 * 1024 * 1024; // 5MB
+        var allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+        
+        if (file.size > maxSize) {
+            showMessage('File "' + file.name + '" is too large. Maximum size is 5MB.', 'error');
+            return false;
+        }
+        
+        if (!allowedTypes.includes(file.type)) {
+            showMessage('File "' + file.name + '" is not a supported format. Allowed: ' + allowedTypes.join(', '), 'error');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Create file preview item
+     */
+    function createFilePreviewItem(file) {
+        var item = document.createElement('div');
+        item.className = 'file-preview-item';
+        item.style.cssText = 'background: #f8f9fa; border: 1px solid #e1e5e9; border-radius: 6px; padding: 10px; text-align: center; position: relative; margin: 5px;';
+        
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'file-remove-btn';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.style.cssText = 'position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; z-index: 10;';
+        
+        var fileName = document.createElement('div');
+        fileName.className = 'file-name';
+        fileName.textContent = file.name;
+        fileName.style.cssText = 'font-size: 12px; margin-bottom: 4px; word-break: break-all; color: #2c3e50; font-weight: 500;';
+        
+        var fileSize = document.createElement('div');
+        fileSize.className = 'file-size';
+        fileSize.textContent = formatFileSize(file.size);
+        fileSize.style.cssText = 'font-size: 11px; color: #7f8c8d;';
+        
+        item.appendChild(removeBtn);
+        item.appendChild(fileName);
+        item.appendChild(fileSize);
+        
+        return item;
+    }
+    
+    /**
+     * Generate image preview
+     */
+    function generateImagePreview(file, previewItem) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.cssText = 'max-width: 100%; max-height: 80px; border-radius: 4px; margin-bottom: 8px;';
+            previewItem.insertBefore(img, previewItem.firstChild);
+        };
+        
+        reader.onerror = function(e) {
+            console.error('Error reading file:', file.name, e);
+        };
+        
+        try {
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('Error starting FileReader for:', file.name, error);
+        }
+    }
+    
+    /**
+     * Format file size
+     */
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        
+        var k = 1024;
+        var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    /**
+     * Show message
+     */
+    function showMessage(message, type) {
+        var messageContainer = document.getElementById('response-messages');
+        if (!messageContainer) {
+            messageContainer = document.createElement('div');
+            messageContainer.id = 'response-messages';
+            messageContainer.style.cssText = 'margin: 20px 0;';
+            
+            var customerSection = document.querySelector('.customer-response-section');
+            if (customerSection) {
+                customerSection.insertBefore(messageContainer, customerSection.firstChild);
+            }
+        }
+        
+        var messageElement = document.createElement('div');
+        messageElement.className = type === 'error' ? 'response-message error' : 'response-message success';
+        messageElement.style.cssText = 'padding: 12px 20px; border-radius: 6px; margin-bottom: 15px; ' + 
+                              (type === 'error' ? 'background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;' : 'background: #d4edda; border: 1px solid #c3e6cb; color: #155724;');
+        messageElement.innerHTML = '<strong>' + (type === 'error' ? 'Error:' : 'Success:') + '</strong> ' + message;
+        
+        messageContainer.innerHTML = '';
+        messageContainer.appendChild(messageElement);
+        
+        // Auto-hide after 5 seconds for success messages
+        if (type === 'success') {
+            setTimeout(function() {
+                messageElement.style.display = 'none';
+            }, 5000);
+        }
+    }
+});
 </script>
 
 <!-- Image Modal -->
@@ -819,5 +1191,3 @@ window.onclick = function(event) {
         <img id="modalImage" src="" alt="Attachment">
     </div>
 </div>
-
-<?php get_footer(); ?>

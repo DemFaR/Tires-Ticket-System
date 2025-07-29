@@ -71,7 +71,7 @@ $statuses = $this->db->get_statuses();
                             <th><?php _e('Color', 'altalayi-ticket'); ?></th>
                             <th><?php _e('Final Status', 'altalayi-ticket'); ?></th>
                             <th><?php _e('Tickets Count', 'altalayi-ticket'); ?></th>
-                            <th><?php _e('Actions', 'altalayi-ticket'); ?></th>
+                            <!--<th><?php _e('Actions', 'altalayi-ticket'); ?></th>-->
                         </tr>
                     </thead>
                     <tbody id="status-list">
@@ -106,19 +106,22 @@ $statuses = $this->db->get_statuses();
                                     echo esc_html($ticket_count);
                                     ?>
                                 </td>
-                                <td>
+                                <!--
+                                <td>                                    
                                     <button type="button" class="button button-small edit-status" data-status-id="<?php echo esc_attr($status->id); ?>">
                                         <?php _e('Edit Order', 'altalayi-ticket'); ?>
                                     </button>
                                     <button type="button" class="button button-small edit-status-name" data-status-id="<?php echo esc_attr($status->id); ?>">
                                         <?php _e('Edit Status', 'altalayi-ticket'); ?>
                                     </button>
+                                    
                                     <?php if ($ticket_count == 0): ?>
                                         <button type="button" class="button button-small button-link-delete delete-status" data-status-id="<?php echo esc_attr($status->id); ?>">
                                             <?php _e('Delete', 'altalayi-ticket'); ?>
                                         </button>
                                     <?php endif; ?>
                                 </td>
+                                -->
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
