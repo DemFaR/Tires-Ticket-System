@@ -9,6 +9,8 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="altalayi-ticket-view-container">
+    <?php include plugin_dir_path(__FILE__) . 'language-switcher.php'; ?>
+    
     <div class="ticket-view-wrapper">
         <!-- Ticket Header -->
         <div class="ticket-header">

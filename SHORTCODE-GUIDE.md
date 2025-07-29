@@ -2,7 +2,7 @@
 
 ## Available Shortcodes
 
-The Altalayi Ticket System now provides three powerful shortcodes that can be used in any WordPress page or post, including Elementor pages. This gives you complete control over the layout and design.
+The Altalayi Ticket System provides three powerful shortcodes that can be used in any WordPress page or post, including Elementor pages. This gives you complete control over the layout and design with multilingual support.
 
 ### 1. Ticket Creation Form - `[altalayi_ticket_form]`
 

@@ -2,12 +2,23 @@
 /**
  * Plugin Name: Altalayi Tire Ticket System
  * Plugin URI: https://altalayi.com
- * Description: Professional ticket system for tire warranty and customer complaints management for Altalayi company.
- * Version: 1.0.0
- * Author: Altalayi Company
+ * Description: Professional ticket system for tire warranty and customer complaints management for Altalayi company. Features advanced email notifications, role-based access control, file uploads, comprehensive ticket management, full Arabic localization, and Polylang integration.
+ * Version: 1.3.0
+ * Author: Mohamed Ashraf
+ * Author URI: https://altalayi.com
  * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: altalayi-ticket
  * Domain Path: /languages
+ * Requires at least: 5.0
+ * Tested up to: 6.6
+ * Requires PHP: 7.4
+ * Network: false
+ * 
+ * @package AltalayiTicketSystem
+ * @version 1.3.0
+ * @author Mohamed Ashraf
+ * @copyright 2024 Altalayi Company
  */
 
 // Prevent direct access
@@ -16,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('ALTALAYI_TICKET_VERSION', '1.0.0');
+define('ALTALAYI_TICKET_VERSION', '1.2.0');
 define('ALTALAYI_TICKET_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ALTALAYI_TICKET_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('ALTALAYI_TICKET_PLUGIN_FILE', __FILE__);
@@ -39,6 +50,16 @@ class AltalayiTicketSystem {
      * Initialize plugin functionality
      */
     public function init() {
+        // Handle language detection first
+        $current_lang = altalayi_get_current_language();
+        
+        // Force Arabic locale if detected
+        if ($current_lang === 'ar') {
+            add_filter('locale', function($locale) {
+                return 'ar';
+            });
+        }
+        
         // Load text domain for translations
         load_plugin_textdomain('altalayi-ticket', false, dirname(plugin_basename(__FILE__)) . '/languages');
         
@@ -170,41 +191,113 @@ class AltalayiTicketSystem {
  */
 
 /**
- * Get the URL for the create ticket page from settings
+ * Get current language code
  */
-function altalayi_get_create_ticket_url() {
-    $settings = get_option('altalayi_ticket_settings', array());
-    $page_id = $settings['frontend_create_page'] ?? '';
-    
-    if ($page_id && get_post_status($page_id) === 'publish') {
-        return get_permalink($page_id);
+function altalayi_get_current_language() {
+    // Check for language parameter in URL
+    if (isset($_GET['lang']) && $_GET['lang'] === 'ar') {
+        return 'ar';
     }
     
-    // Fallback to old URL structure
+    // Check for Arabic URL path
+    $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+    if (strpos($request_uri, '/ar/') !== false) {
+        return 'ar';
+    }
+    
+    // Check for WordPress locale
+    $locale = get_locale();
+    
+    // Extract language code from locale
+    if (strpos($locale, 'ar') === 0) {
+        return 'ar'; // Arabic
+    }
+    
+    return 'en'; // Default to English
+}
+
+/**
+ * Get the URL for the create ticket page from settings with language support
+ */
+function altalayi_get_create_ticket_url($language = null) {
+    if ($language === null) {
+        $language = altalayi_get_current_language();
+    }
+    
+    $settings = get_option('altalayi_ticket_settings', array());
+    
+    // Get the appropriate page based on language
+    if ($language === 'ar') {
+        $page_id = $settings['frontend_create_page_ar'] ?? $settings['frontend_create_page'] ?? '';
+    } else {
+        $page_id = $settings['frontend_create_page'] ?? '';
+    }
+    
+    if ($page_id && get_post_status($page_id) === 'publish') {
+        $url = get_permalink($page_id);
+        // Add language parameter if needed
+        if ($language === 'ar' && !isset($settings['frontend_create_page_ar'])) {
+            $url = add_query_arg('lang', 'ar', $url);
+        }
+        return $url;
+    }
+    
+    // Fallback to old URL structure with language code
+    if ($language === 'ar') {
+        return home_url('/ar/new-ticket');
+    }
     return home_url('/new-ticket');
 }
 
 /**
- * Get the URL for the access ticket page from settings
+ * Get the URL for the access ticket page from settings with language support
  */
-function altalayi_get_access_ticket_url() {
-    $settings = get_option('altalayi_ticket_settings', array());
-    $page_id = $settings['frontend_access_page'] ?? '';
-    
-    if ($page_id && get_post_status($page_id) === 'publish') {
-        return get_permalink($page_id);
+function altalayi_get_access_ticket_url($language = null) {
+    if ($language === null) {
+        $language = altalayi_get_current_language();
     }
     
-    // Fallback to old URL structure
+    $settings = get_option('altalayi_ticket_settings', array());
+    
+    // Get the appropriate page based on language
+    if ($language === 'ar') {
+        $page_id = $settings['frontend_access_page_ar'] ?? $settings['frontend_access_page'] ?? '';
+    } else {
+        $page_id = $settings['frontend_access_page'] ?? '';
+    }
+    
+    if ($page_id && get_post_status($page_id) === 'publish') {
+        $url = get_permalink($page_id);
+        // Add language parameter if needed
+        if ($language === 'ar' && !isset($settings['frontend_access_page_ar'])) {
+            $url = add_query_arg('lang', 'ar', $url);
+        }
+        return $url;
+    }
+    
+    // Fallback to old URL structure with language code
+    if ($language === 'ar') {
+        return home_url('/ar/ticket-login');
+    }
     return home_url('/ticket-login');
 }
 
 /**
- * Get the URL for the ticket view page from settings
+ * Get the URL for the ticket view page from settings with language support
  */
-function altalayi_get_ticket_view_url($ticket_number = '') {
+function altalayi_get_ticket_view_url($ticket_number = '', $language = null) {
+    if ($language === null) {
+        $language = altalayi_get_current_language();
+    }
+    
     $settings = get_option('altalayi_ticket_settings', array());
-    $page_id = $settings['frontend_view_page'] ?? '';
+    
+    // Get the appropriate page based on language
+    if ($language === 'ar') {
+        $page_id = $settings['frontend_view_page_ar'] ?? $settings['frontend_view_page'] ?? '';
+    } else {
+        $page_id = $settings['frontend_view_page'] ?? '';
+    }
     
     if ($page_id && get_post_status($page_id) === 'publish') {
         $url = get_permalink($page_id);
@@ -212,12 +305,23 @@ function altalayi_get_ticket_view_url($ticket_number = '') {
         if ($ticket_number) {
             $url = add_query_arg('ticket', $ticket_number, $url);
         }
+        // Add language parameter if needed
+        if ($language === 'ar' && !isset($settings['frontend_view_page_ar'])) {
+            $url = add_query_arg('lang', 'ar', $url);
+        }
         return $url;
     }
     
-    // Fallback to old URL structure
+    // Fallback to old URL structure with language code
     if ($ticket_number) {
+        if ($language === 'ar') {
+            return home_url('/ar/ticket/' . $ticket_number);
+        }
         return home_url('/ticket/' . $ticket_number);
+    }
+    
+    if ($language === 'ar') {
+        return home_url('/ar/ticket/');
     }
     return home_url('/ticket/');
 }

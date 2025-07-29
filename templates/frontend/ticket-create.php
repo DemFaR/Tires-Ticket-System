@@ -9,6 +9,8 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="altalayi-ticket-container">
+    <?php include plugin_dir_path(__FILE__) . 'language-switcher.php'; ?>
+    
     <div class="ticket-form-wrapper">
         <div class="form-header">
             <h1><?php _e('Submit a Tire Complaint', 'altalayi-ticket'); ?></h1>

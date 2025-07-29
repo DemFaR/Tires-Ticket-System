@@ -18,6 +18,9 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['altalayi_settings_nonce']
         'frontend_create_page' => intval($_POST['frontend_create_page']),
         'frontend_access_page' => intval($_POST['frontend_access_page']),
         'frontend_view_page' => intval($_POST['frontend_view_page']),
+        'frontend_create_page_ar' => intval($_POST['frontend_create_page_ar']),
+        'frontend_access_page_ar' => intval($_POST['frontend_access_page_ar']),
+        'frontend_view_page_ar' => intval($_POST['frontend_view_page_ar']),
         'enable_email_notifications' => isset($_POST['enable_email_notifications']) ? 1 : 0,
         'admin_notification_email' => sanitize_email($_POST['admin_notification_email']),
         'notify_on_new_ticket' => isset($_POST['notify_on_new_ticket']) ? 1 : 0,
@@ -49,6 +52,9 @@ $defaults = array(
     'frontend_create_page' => '',
     'frontend_access_page' => '',
     'frontend_view_page' => '',
+    'frontend_create_page_ar' => '',
+    'frontend_access_page_ar' => '',
+    'frontend_view_page_ar' => '',
     'enable_email_notifications' => 1,
     'admin_notification_email' => get_option('admin_email'),
     'notify_on_new_ticket' => 1,
@@ -245,6 +251,70 @@ $all_roles = $wp_roles->roles;
                         </select>
                         <p class="description">
                             <?php _e('Page where customers will view their ticket details. Add the shortcode [altalayi_ticket_view auto_detect="true"] to this page. If not selected, the default /ticket/ URL will be used.', 'altalayi-ticket'); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            
+            <h3><?php _e('Arabic Pages (Optional)', 'altalayi-ticket'); ?></h3>
+            <p class="description">
+                <?php _e('Set separate pages for Arabic language support. If not set, language parameter will be added to the main pages.', 'altalayi-ticket'); ?>
+            </p>
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        <label for="frontend_create_page_ar"><?php _e('Arabic Ticket Creation Page', 'altalayi-ticket'); ?></label>
+                    </th>
+                    <td>
+                        <select id="frontend_create_page_ar" name="frontend_create_page_ar">
+                            <option value=""><?php _e('Use main page with language parameter', 'altalayi-ticket'); ?></option>
+                            <?php foreach ($pages as $page): ?>
+                                <option value="<?php echo esc_attr($page->ID); ?>" 
+                                        <?php selected($settings['frontend_create_page_ar'], $page->ID); ?>>
+                                    <?php echo esc_html($page->post_title); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">
+                            <?php _e('Optional: Separate page for Arabic ticket creation. Add the shortcode [altalayi_ticket_form] to this page.', 'altalayi-ticket'); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="frontend_access_page_ar"><?php _e('Arabic Ticket Access Page', 'altalayi-ticket'); ?></label>
+                    </th>
+                    <td>
+                        <select id="frontend_access_page_ar" name="frontend_access_page_ar">
+                            <option value=""><?php _e('Use main page with language parameter', 'altalayi-ticket'); ?></option>
+                            <?php foreach ($pages as $page): ?>
+                                <option value="<?php echo esc_attr($page->ID); ?>" 
+                                        <?php selected($settings['frontend_access_page_ar'], $page->ID); ?>>
+                                    <?php echo esc_html($page->post_title); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">
+                            <?php _e('Optional: Separate page for Arabic ticket access. Add the shortcode [altalayi_ticket_login] to this page.', 'altalayi-ticket'); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="frontend_view_page_ar"><?php _e('Arabic Ticket View Page', 'altalayi-ticket'); ?></label>
+                    </th>
+                    <td>
+                        <select id="frontend_view_page_ar" name="frontend_view_page_ar">
+                            <option value=""><?php _e('Use main page with language parameter', 'altalayi-ticket'); ?></option>
+                            <?php foreach ($pages as $page): ?>
+                                <option value="<?php echo esc_attr($page->ID); ?>" 
+                                        <?php selected($settings['frontend_view_page_ar'], $page->ID); ?>>
+                                    <?php echo esc_html($page->post_title); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">
+                            <?php _e('Optional: Separate page for Arabic ticket viewing. Add the shortcode [altalayi_ticket_view auto_detect="true"] to this page.', 'altalayi-ticket'); ?>
                         </p>
                     </td>
                 </tr>

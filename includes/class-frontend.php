@@ -24,6 +24,7 @@ class AltalayiTicketFrontend {
         add_shortcode('altalayi_ticket_form', array($this, 'ticket_form_shortcode'));
         add_shortcode('altalayi_ticket_login', array($this, 'ticket_login_shortcode'));
         add_shortcode('altalayi_ticket_view', array($this, 'ticket_view_shortcode'));
+        add_shortcode('altalayi_language_switcher', array($this, 'language_switcher_shortcode'));
         add_action('wp_ajax_nopriv_submit_ticket', array($this, 'ajax_submit_ticket'));
         add_action('wp_ajax_nopriv_login_ticket', array($this, 'ajax_login_ticket'));
         add_action('wp_ajax_nopriv_add_customer_response', array($this, 'ajax_add_customer_response'));
@@ -57,16 +58,22 @@ class AltalayiTicketFrontend {
      * Add rewrite rules for custom URLs
      */
     public function add_rewrite_rules() {
+        // English URLs
         add_rewrite_rule('^ticket/([^/]+)/?', 'index.php?altalayi_ticket_action=view&ticket_number=$matches[1]', 'top');
         add_rewrite_rule('^ticket-login/?', 'index.php?altalayi_ticket_action=login', 'top');
         add_rewrite_rule('^new-ticket/?', 'index.php?altalayi_ticket_action=create', 'top');
+        
+        // Arabic URLs
+        add_rewrite_rule('^ar/ticket/([^/]+)/?', 'index.php?altalayi_ticket_action=view&ticket_number=$matches[1]&lang=ar', 'top');
+        add_rewrite_rule('^ar/ticket-login/?', 'index.php?altalayi_ticket_action=login&lang=ar', 'top');
+        add_rewrite_rule('^ar/new-ticket/?', 'index.php?altalayi_ticket_action=create&lang=ar', 'top');
         
         // Add query vars
         add_filter('query_vars', array($this, 'add_query_vars'));
         
         // Check if we need to flush rewrite rules
         $rules = get_option('rewrite_rules');
-        if (!isset($rules['^new-ticket/?']) || !isset($rules['^ticket-login/?'])) {
+        if (!isset($rules['^new-ticket/?']) || !isset($rules['^ticket-login/?']) || !isset($rules['^ar/new-ticket/?'])) {
             flush_rewrite_rules(false);
         }
     }
@@ -79,6 +86,41 @@ class AltalayiTicketFrontend {
         if (!session_id()) {
             session_start();
         }
+        
+        // Handle language detection from URL parameters
+        $this->handle_language_detection();
+    }
+    
+    /**
+     * Handle language detection from URL and parameters
+     */
+    private function handle_language_detection() {
+        // Check for language parameter in URL
+        if (isset($_GET['lang']) && $_GET['lang'] === 'ar') {
+            // Set Arabic locale temporarily for this request
+            add_filter('locale', function($locale) {
+                return 'ar';
+            });
+            
+            // Add RTL support
+            add_action('wp_head', function() {
+                echo '<html dir="rtl">';
+            }, 1);
+        }
+        
+        // Check for Arabic URL paths
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($request_uri, '/ar/') !== false) {
+            // Set Arabic locale temporarily for this request
+            add_filter('locale', function($locale) {
+                return 'ar';
+            });
+            
+            // Add RTL support
+            add_action('wp_head', function() {
+                echo '<html dir="rtl">';
+            }, 1);
+        }
     }
     
     /**
@@ -87,6 +129,7 @@ class AltalayiTicketFrontend {
     public function add_query_vars($vars) {
         $vars[] = 'altalayi_ticket_action';
         $vars[] = 'ticket_number';
+        $vars[] = 'lang';
         return $vars;
     }
     
@@ -797,5 +840,19 @@ class AltalayiTicketFrontend {
             'attachment_id' => $attachment_id,
             'nonce' => wp_create_nonce('download_attachment_' . $attachment_id)
         ), admin_url('admin-ajax.php'));
+    }
+    
+    /**
+     * Language switcher shortcode
+     */
+    public function language_switcher_shortcode($atts) {
+        $atts = shortcode_atts(array(
+            'style' => 'default', // default, compact, buttons
+            'show_flags' => false
+        ), $atts, 'altalayi_language_switcher');
+        
+        ob_start();
+        include plugin_dir_path(__FILE__) . '../templates/frontend/language-switcher.php';
+        return ob_get_clean();
     }
 }
