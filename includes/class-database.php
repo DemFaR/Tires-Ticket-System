@@ -57,6 +57,42 @@ class AltalayiTicketDatabase {
         if (empty($column_exists)) {
             $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN mileage int(11) AFTER purchase_location");
         }
+        
+        // Check if customer_city column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'customer_city'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN customer_city varchar(255) AFTER customer_email");
+        }
+        
+        // Check if motocare_center_visited column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'motocare_center_visited'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN motocare_center_visited varchar(255) AFTER customer_city");
+        }
+        
+        // Check if number_of_tires column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'number_of_tires'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN number_of_tires int(11) AFTER tire_model");
+        }
+        
+        // Check if tire_position column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'tire_position'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN tire_position varchar(255) AFTER number_of_tires");
+        }
+        
+        // Check if air_pressure column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'air_pressure'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN air_pressure varchar(100) AFTER tire_position");
+        }
+        
+        // Check if tread_depth column exists
+        $column_exists = $wpdb->get_results("SHOW COLUMNS FROM {$this->tickets_table} LIKE 'tread_depth'");
+        if (empty($column_exists)) {
+            $wpdb->query("ALTER TABLE {$this->tickets_table} ADD COLUMN tread_depth varchar(100) AFTER air_pressure");
+        }
     }
     
     /**
@@ -74,10 +110,16 @@ class AltalayiTicketDatabase {
             customer_name varchar(255) NOT NULL,
             customer_phone varchar(20) NOT NULL,
             customer_email varchar(255) NOT NULL,
+            customer_city varchar(255),
+            motocare_center_visited varchar(255),
             complaint_text longtext NOT NULL,
             tire_brand varchar(255),
             tire_model varchar(255),
             tire_size varchar(255),
+            number_of_tires int(11),
+            tire_position varchar(255),
+            air_pressure varchar(100),
+            tread_depth varchar(100),
             purchase_date date,
             purchase_location varchar(255),
             mileage int(11),
@@ -213,11 +255,19 @@ class AltalayiTicketDatabase {
             'customer_name' => sanitize_text_field($data['customer_name']),
             'customer_phone' => sanitize_text_field($data['customer_phone']),
             'customer_email' => sanitize_email($data['customer_email']),
+            'customer_city' => sanitize_text_field($data['customer_city'] ?? ''),
+            'motocare_center_visited' => sanitize_text_field($data['motocare_center_visited'] ?? ''),
             'complaint_text' => sanitize_textarea_field($data['complaint_text']),
             'tire_brand' => sanitize_text_field($data['tire_brand']),
             'tire_model' => sanitize_text_field($data['tire_model']),
             'tire_size' => sanitize_text_field($data['tire_size']),
+            'number_of_tires' => intval($data['number_of_tires'] ?? 0),
+            'tire_position' => sanitize_text_field($data['tire_position'] ?? ''),
+            'air_pressure' => sanitize_text_field($data['air_pressure'] ?? ''),
+            'tread_depth' => sanitize_text_field($data['tread_depth'] ?? ''),
             'purchase_date' => $data['purchase_date'],
+            'purchase_location' => sanitize_text_field($data['purchase_location'] ?? ''),
+            'mileage' => intval($data['mileage'] ?? 0),
             'status_id' => $open_status_id,
             'priority' => sanitize_text_field($data['priority'] ?? 'medium')
         );

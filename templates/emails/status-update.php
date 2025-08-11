@@ -10,34 +10,24 @@ if (!defined('ABSPATH')) {
 echo $this->get_email_header();
 ?>
 
-<h2><?php _e('Ticket Status Update', 'altalayi-ticket'); ?></h2>
+<h2><?php _e('Your Ticket Status Has Been Updated', 'altalayi-ticket'); ?></h2>
 
 <p><?php printf(__('Dear %s,', 'altalayi-ticket'), esc_html($ticket->customer_name)); ?></p>
 
-<p><?php _e('Your tire complaint ticket has been updated. Here are the current details:', 'altalayi-ticket'); ?></p>
+<p><?php _e('Your tire complaint ticket status has been updated. Please login to view the full details and any new responses.', 'altalayi-ticket'); ?></p>
 
 <div class="ticket-info">
-    <h3><?php _e('Ticket Information', 'altalayi-ticket'); ?></h3>
-    <table style="width: 100%; border-collapse: collapse;">
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">
-                <?php _e('Ticket Number:', 'altalayi-ticket'); ?>
-            </td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">
-                <strong style="color: #e74c3c; font-size: 18px;"><?php echo esc_html($ticket->ticket_number); ?></strong>
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">
-                <?php _e('Current Status:', 'altalayi-ticket'); ?>
-            </td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">
-                <span class="status-badge" style="background-color: <?php echo esc_attr($ticket->status_color); ?>;">
-                    <?php echo esc_html($ticket->status_name); ?>
-                </span>
-            </td>
-        </tr>
-        <tr>
+    <h3><?php _e('Login Credentials', 'altalayi-ticket'); ?></h3>
+    <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p style="margin: 0 0 10px 0;"><strong><?php _e('Ticket Number:', 'altalayi-ticket'); ?></strong> <code style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 16px;"><?php echo esc_html($ticket->ticket_number); ?></code></p>
+        <p style="margin: 0 0 10px 0;"><strong><?php _e('Phone Number:', 'altalayi-ticket'); ?></strong> <code style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 16px;"><?php echo esc_html($ticket->customer_phone); ?></code></p>
+        <p style="margin: 0;"><strong><?php _e('New Status:', 'altalayi-ticket'); ?></strong> <span style="background-color: <?php echo esc_attr($ticket->status_color); ?>; color: white; padding: 4px 8px; border-radius: 4px; font-size: 14px;"><?php echo esc_html($ticket->status_name); ?></span></p>
+    </div>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="<?php echo esc_url($login_url); ?>" class="btn" style="background: #2c3e50; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;"><?php _e('Login to View Update Details', 'altalayi-ticket'); ?></a>
+</div>
             <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">
                 <?php _e('Last Updated:', 'altalayi-ticket'); ?>
             </td>

@@ -593,7 +593,7 @@ msgstr ""
 msgid "No history found"
 msgstr ""
 
-#: templates/frontend/ticket-create.php:15
+#: includes/class-frontend.php:474 includes/elementor/widgets/ticket-form-widget.php:47
 msgid "Submit New Ticket"
 msgstr ""
 

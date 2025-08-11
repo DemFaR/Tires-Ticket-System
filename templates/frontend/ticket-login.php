@@ -9,8 +9,8 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="altalayi-login-container">
-    <?php include plugin_dir_path(__FILE__) . 'language-switcher.php'; ?>
-    
+    <!--< ?php include plugin_dir_path(__FILE__) . 'language-switcher.php'; ?>-->
+
     <div class="login-wrapper">
         <div class="login-header">
             <h1><?php _e('Access Your Ticket', 'altalayi-ticket'); ?></h1>

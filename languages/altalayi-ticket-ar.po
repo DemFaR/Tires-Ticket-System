@@ -25,75 +25,75 @@ msgstr "تذاكر الطلائع"
 
 #: includes/class-admin.php:26
 msgid "Dashboard"
-msgstr ""
+msgstr "لوحة التحكم"
 
 #: includes/class-admin.php:27
 msgid "Open Tickets"
-msgstr ""
+msgstr "التذاكر المفتوحة"
 
 #: includes/class-admin.php:28
 msgid "Closed Tickets"
-msgstr ""
+msgstr "التذاكر المغلقة"
 
 #: includes/class-admin.php:29
 msgid "View Ticket"
-msgstr ""
+msgstr "عرض التذكرة"
 
 #: includes/class-admin.php:30
 msgid "Settings"
-msgstr ""
+msgstr "الإعدادات"
 
 #: includes/class-admin.php:31
 msgid "Statuses"
-msgstr ""
+msgstr "الحالات"
 
 #: includes/class-ajax.php:25
 msgid "Security check failed"
-msgstr ""
+msgstr "فشل في فحص الأمان"
 
 #: includes/class-ajax.php:35
 msgid "Status updated successfully"
-msgstr ""
+msgstr "تم تحديث الحالة بنجاح"
 
 #: includes/class-ajax.php:38
 msgid "Failed to update status"
-msgstr ""
+msgstr "فشل في تحديث الحالة"
 
 #: includes/class-ajax.php:55
 msgid "Ticket assigned successfully"
-msgstr ""
+msgstr "تم تعيين التذكرة بنجاح"
 
 #: includes/class-ajax.php:59
 msgid "Failed to assign ticket"
-msgstr ""
+msgstr "فشل في تعيين التذكرة"
 
 #: includes/class-ajax.php:75
 msgid "Ticket successfully assigned to you"
-msgstr ""
+msgstr "تم تعيين التذكرة إليك بنجاح"
 
 #: includes/class-ajax.php:80
 msgid "Failed to assign ticket"
-msgstr ""
+msgstr "فشل في تعيين التذكرة"
 
 #: includes/class-ajax.php:95
 msgid "Response added successfully"
-msgstr ""
+msgstr "تم إضافة الرد بنجاح"
 
 #: includes/class-ajax.php:99
 msgid "Failed to add response"
-msgstr ""
+msgstr "فشل في إضافة الرد"
 
 #: includes/class-ajax.php:115
 msgid "Note added successfully"
-msgstr ""
+msgstr "تم إضافة الملاحظة بنجاح"
 
 #: includes/class-ajax.php:119
 msgid "Failed to add note"
-msgstr ""
+msgstr "فشل في إضافة الملاحظة"
 
 #: includes/class-ajax.php:140
 msgid "Please provide a note"
-msgstr ""
+msgstr "يرجى إدخال ملاحظة"
 
 #: includes/class-ajax.php:165
 msgid "Field %s is required"
@@ -133,469 +133,469 @@ msgstr "فشل في إضافة الرد"
 
 #: includes/class-email.php:59
 msgid "[Altalayi] Ticket Created: %s"
-msgstr ""
+msgstr "[الطلائع] تم إنشاء التذكرة: %s"
 
 #: includes/class-email.php:88
 msgid "[Altalayi] New Ticket: %s"
-msgstr ""
+msgstr "[الطلائع] تذكرة جديدة: %s"
 
 #: includes/class-email.php:107
 msgid "[Altalayi] Ticket Status Updated: %s"
-msgstr ""
+msgstr "[الطلائع] تم تحديث حالة التذكرة: %s"
 
 #: includes/class-email.php:130
 msgid "[Altalayi] Customer Response: %s"
-msgstr ""
+msgstr "[الطلائع] رد العميل: %s"
 
 #: includes/class-email.php:154
 msgid "[Altalayi] Ticket Assigned: %s"
-msgstr ""
+msgstr "[الطلائع] تم تعيين التذكرة: %s"
 
 #: includes/class-email.php:178
 msgid "[Altalayi] New Response for Ticket: %s"
-msgstr ""
+msgstr "[الطلائع] رد جديد على التذكرة: %s"
 
 #: templates/admin/dashboard.php:5
 msgid "Dashboard"
-msgstr ""
+msgstr "لوحة التحكم"
 
 #: templates/admin/dashboard.php:10
 msgid "Total Tickets"
-msgstr ""
+msgstr "إجمالي التذاكر"
 
 #: templates/admin/dashboard.php:15
 msgid "Open Tickets"
-msgstr ""
+msgstr "التذاكر المفتوحة"
 
 #: templates/admin/dashboard.php:20
 msgid "Pending Tickets"
-msgstr ""
+msgstr "التذاكر المعلقة"
 
 #: templates/admin/dashboard.php:25
 msgid "Closed Tickets"
-msgstr ""
+msgstr "التذاكر المغلقة"
 
 #: templates/admin/dashboard.php:35
 msgid "Recent Tickets"
-msgstr ""
+msgstr "التذاكر الحديثة"
 
 #: templates/admin/dashboard.php:45
 msgid "Ticket Number"
-msgstr ""
+msgstr "رقم التذكرة"
 
 #: templates/admin/dashboard.php:46
 msgid "Customer"
-msgstr ""
+msgstr "العميل"
 
 #: templates/admin/dashboard.php:47
 msgid "Status"
-msgstr ""
+msgstr "الحالة"
 
 #: templates/admin/dashboard.php:48
 msgid "Created"
-msgstr ""
+msgstr "تاريخ الإنشاء"
 
 #: templates/admin/dashboard.php:49
 msgid "Action"
-msgstr ""
+msgstr "الإجراء"
 
 #: templates/admin/dashboard.php:70
 msgid "View"
-msgstr ""
+msgstr "عرض"
 
 #: templates/admin/dashboard.php:75
 msgid "No tickets found"
-msgstr ""
+msgstr "لم يتم العثور على تذاكر"
 
 #: templates/admin/settings.php:10
 msgid "Altalayi Ticket System Settings"
-msgstr ""
+msgstr "إعدادات نظام تذاكر الطلائع"
 
 #: templates/admin/settings.php:15
 msgid "Settings saved successfully!"
-msgstr ""
+msgstr "تم حفظ الإعدادات بنجاح!"
 
 #: templates/admin/settings.php:25
 msgid "General"
-msgstr ""
+msgstr "عام"
 
 #: templates/admin/settings.php:26
 msgid "Frontend Pages"
-msgstr ""
+msgstr "صفحات الواجهة الأمامية"
 
 #: templates/admin/settings.php:27
 msgid "Email Notifications"
-msgstr ""
+msgstr "إشعارات البريد الإلكتروني"
 
 #: templates/admin/settings.php:28
 msgid "File Uploads"
-msgstr ""
+msgstr "رفع الملفات"
 
 #: templates/admin/settings.php:29
 msgid "Advanced"
-msgstr ""
+msgstr "متقدم"
 
 #: templates/admin/settings.php:35
 msgid "Company Information"
-msgstr ""
+msgstr "معلومات الشركة"
 
 #: templates/admin/settings.php:40
 msgid "Company Name"
-msgstr ""
+msgstr "اسم الشركة"
 
 #: templates/admin/settings.php:45
 msgid "Your company name for branding"
-msgstr ""
+msgstr "اسم شركتك للعلامة التجارية"
 
 #: templates/admin/settings.php:50
 msgid "Company Email"
-msgstr ""
+msgstr "بريد الشركة الإلكتروني"
 
 #: templates/admin/settings.php:55
 msgid "Main company email address"
-msgstr ""
+msgstr "عنوان البريد الإلكتروني الرئيسي للشركة"
 
 #: templates/admin/settings.php:60
 msgid "Company Phone"
-msgstr ""
+msgstr "هاتف الشركة"
 
 #: templates/admin/settings.php:65
 msgid "Company phone number"
-msgstr ""
+msgstr "رقم هاتف الشركة"
 
 #: templates/admin/settings.php:70
 msgid "Company Address"
-msgstr ""
+msgstr "عنوان الشركة"
 
 #: templates/admin/settings.php:75
 msgid "Company address for contact information"
-msgstr ""
+msgstr "عنوان الشركة لمعلومات الاتصال"
 
 #: templates/admin/settings.php:80
 msgid "Company Website"
-msgstr ""
+msgstr "موقع الشركة الإلكتروني"
 
 #: templates/admin/settings.php:85
 msgid "Company website URL"
-msgstr ""
+msgstr "رابط موقع الشركة الإلكتروني"
 
 #: templates/admin/settings.php:95
 msgid "Frontend Page Configuration"
-msgstr ""
+msgstr "إعدادات صفحات الواجهة الأمامية"
 
 #: templates/admin/settings.php:100
 msgid "Create Ticket Page"
-msgstr ""
+msgstr "صفحة إنشاء تذكرة"
 
 #: templates/admin/settings.php:110
 msgid "Select a page for ticket creation form"
-msgstr ""
+msgstr "اختر صفحة لنموذج إنشاء التذكرة"
 
 #: templates/admin/settings.php:115
 msgid "Access Ticket Page"
-msgstr ""
+msgstr "صفحة الوصول للتذكرة"
 
 #: templates/admin/settings.php:125
 msgid "Select a page for ticket access/login"
-msgstr ""
+msgstr "اختر صفحة للوصول/تسجيل دخول التذكرة"
 
 #: templates/admin/settings.php:130
 msgid "View Ticket Page"
-msgstr ""
+msgstr "صفحة عرض التذكرة"
 
 #: templates/admin/settings.php:140
 msgid "Select a page for viewing ticket details"
-msgstr ""
+msgstr "اختر صفحة لعرض تفاصيل التذكرة"
 
 #: templates/admin/settings.php:150
 msgid "Email Notifications"
-msgstr ""
+msgstr "إشعارات البريد الإلكتروني"
 
 #: templates/admin/settings.php:155
 msgid "Enable Notifications"
-msgstr ""
+msgstr "تفعيل الإشعارات"
 
 #: templates/admin/settings.php:160
 msgid "Enable email notifications"
-msgstr ""
+msgstr "تفعيل إشعارات البريد الإلكتروني"
 
 #: templates/admin/settings.php:165
 msgid "Admin Email"
-msgstr ""
+msgstr "بريد المدير الإلكتروني"
 
 #: templates/admin/settings.php:170
 msgid "Email address to receive admin notifications"
-msgstr ""
+msgstr "عنوان البريد الإلكتروني لتلقي إشعارات المدير"
 
 #: templates/admin/settings.php:175
 msgid "Notification Types"
-msgstr ""
+msgstr "أنواع الإشعارات"
 
 #: templates/admin/settings.php:180
 msgid "Notify admin when new ticket is created"
-msgstr ""
+msgstr "إشعار المدير عند إنشاء تذكرة جديدة"
 
 #: templates/admin/settings.php:185
 msgid "Notify customer when ticket status changes"
-msgstr ""
+msgstr "إشعار العميل عند تغيير حالة التذكرة"
 
 #: templates/admin/settings.php:190
 msgid "Notify admin when customer responds"
-msgstr ""
+msgstr "إشعار المدير عند رد العميل"
 
 #: templates/admin/settings.php:195
 msgid "Notify User Roles"
-msgstr ""
+msgstr "إشعار أدوار المستخدمين"
 
 #: templates/admin/settings.php:200
 msgid "Select roles to receive notifications:"
-msgstr ""
+msgstr "اختر الأدوار لتلقي الإشعارات:"
 
 #: templates/admin/settings.php:220
 msgid "All users with selected roles will receive email notifications. User count is shown in parentheses."
-msgstr ""
+msgstr "جميع المستخدمين ذوي الأدوار المحددة سيتلقون إشعارات بالبريد الإلكتروني. يظهر عدد المستخدمين بين قوسين."
 
 #: templates/admin/settings.php:225
 msgid "Additional Emails"
-msgstr ""
+msgstr "رسائل إلكترونية إضافية"
 
 #: templates/admin/settings.php:230
 msgid "Enter additional email addresses, one per line..."
-msgstr ""
+msgstr "أدخل عناوين بريد إلكتروني إضافية، واحد في كل سطر..."
 
 #: templates/admin/settings.php:235
 msgid "Additional email addresses to receive notifications (one per line). These will be added to role-based notifications."
-msgstr ""
+msgstr "عناوين بريد إلكتروني إضافية لتلقي الإشعارات (واحد في كل سطر). ستتم إضافتها إلى الإشعارات القائمة على الأدوار."
 
 #: templates/admin/settings.php:245
 msgid "File Upload Settings"
-msgstr ""
+msgstr "إعدادات رفع الملفات"
 
 #: templates/admin/settings.php:250
 msgid "Allow File Uploads"
-msgstr ""
+msgstr "السماح برفع الملفات"
 
 #: templates/admin/settings.php:255
 msgid "Allow customers to upload files with tickets"
-msgstr ""
+msgstr "السماح للعملاء برفع الملفات مع التذاكر"
 
 #: templates/admin/settings.php:260
 msgid "Maximum File Size (MB)"
-msgstr ""
+msgstr "الحد الأقصى لحجم الملف (ميجابايت)"
 
 #: templates/admin/settings.php:265
 msgid "Maximum file size in megabytes"
-msgstr ""
+msgstr "الحد الأقصى لحجم الملف بالميجابايت"
 
 #: templates/admin/settings.php:270
 msgid "Allowed File Types"
-msgstr ""
+msgstr "أنواع الملفات المسموحة"
 
 #: templates/admin/settings.php:275
 msgid "Comma-separated list of allowed file extensions"
-msgstr ""
+msgstr "قائمة مفصولة بفواصل من امتدادات الملفات المسموحة"
 
 #: templates/admin/settings.php:285
 msgid "Advanced Settings"
-msgstr ""
+msgstr "الإعدادات المتقدمة"
 
 #: templates/admin/settings.php:290
 msgid "Tickets Per Page"
-msgstr ""
+msgstr "التذاكر لكل صفحة"
 
 #: templates/admin/settings.php:295
 msgid "Number of tickets to display per page in admin"
-msgstr ""
+msgstr "عدد التذاكر المعروضة في كل صفحة في لوحة التحكم"
 
 #: templates/admin/settings.php:300
 msgid "Show Delete Button"
-msgstr ""
+msgstr "إظهار زر الحذف"
 
 #: templates/admin/settings.php:305
 msgid "Show delete button in admin ticket list"
-msgstr ""
+msgstr "إظهار زر الحذف في قائمة التذاكر في لوحة التحكم"
 
 #: templates/admin/settings.php:315
 msgid "Save Settings"
-msgstr ""
+msgstr "حفظ الإعدادات"
 
 #: templates/admin/view-ticket.php:15
 msgid "Ticket Details"
-msgstr ""
+msgstr "تفاصيل التذكرة"
 
 #: templates/admin/view-ticket.php:25
 msgid "Ticket Information"
-msgstr ""
+msgstr "معلومات التذكرة"
 
 #: templates/admin/view-ticket.php:30
 msgid "Ticket Number:"
-msgstr ""
+msgstr "رقم التذكرة:"
 
 #: templates/admin/view-ticket.php:35
 msgid "Status:"
-msgstr ""
+msgstr "الحالة:"
 
 #: templates/admin/view-ticket.php:40
 msgid "Priority:"
-msgstr ""
+msgstr "الأولوية:"
 
 #: templates/admin/view-ticket.php:45
 msgid "Created:"
-msgstr ""
+msgstr "تاريخ الإنشاء:"
 
 #: templates/admin/view-ticket.php:50
 msgid "Last Updated:"
-msgstr ""
+msgstr "آخر تحديث:"
 
 #: templates/admin/view-ticket.php:55
 msgid "Assigned To:"
-msgstr ""
+msgstr "مُسند إلى:"
 
 #: templates/admin/view-ticket.php:65
 msgid "Customer Information"
-msgstr ""
+msgstr "معلومات العميل"
 
 #: templates/admin/view-ticket.php:70
 msgid "Name:"
-msgstr ""
+msgstr "الاسم:"
 
 #: templates/admin/view-ticket.php:75
 msgid "Phone:"
-msgstr ""
+msgstr "الهاتف:"
 
 #: templates/admin/view-ticket.php:80
 msgid "Email:"
-msgstr ""
+msgstr "البريد الإلكتروني:"
 
 #: templates/admin/view-ticket.php:90
 msgid "Tire Information"
-msgstr ""
+msgstr "معلومات الإطار"
 
 #: templates/admin/view-ticket.php:95
 msgid "Brand:"
-msgstr ""
+msgstr "الماركة:"
 
 #: templates/admin/view-ticket.php:100
 msgid "Size:"
-msgstr ""
+msgstr "المقاس:"
 
 #: templates/admin/view-ticket.php:105
 msgid "Model:"
-msgstr ""
+msgstr "الموديل:"
 
 #: templates/admin/view-ticket.php:110
 msgid "Purchase Date:"
-msgstr ""
+msgstr "تاريخ الشراء:"
 
 #: templates/admin/view-ticket.php:115
 msgid "DOT Number:"
-msgstr ""
+msgstr "رقم DOT:"
 
 #: templates/admin/view-ticket.php:125
 msgid "Complaint Details"
-msgstr ""
+msgstr "تفاصيل الشكوى"
 
 #: templates/admin/view-ticket.php:135
 msgid "Attachments"
-msgstr ""
+msgstr "المرفقات"
 
 #: templates/admin/view-ticket.php:145
 msgid "Download"
-msgstr ""
+msgstr "تحميل"
 
 #: templates/admin/view-ticket.php:150
 msgid "No attachments"
-msgstr ""
+msgstr "لا توجد مرفقات"
 
 #: templates/admin/view-ticket.php:160
 msgid "Actions"
-msgstr ""
+msgstr "الإجراءات"
 
 #: templates/admin/view-ticket.php:165
 msgid "Change Status"
-msgstr ""
+msgstr "تغيير الحالة"
 
 #: templates/admin/view-ticket.php:175
 msgid "Update Status"
-msgstr ""
+msgstr "تحديث الحالة"
 
 #: templates/admin/view-ticket.php:180
 msgid "Assign Ticket"
-msgstr ""
+msgstr "تعيين التذكرة"
 
 #: templates/admin/view-ticket.php:190
 msgid "Assign"
-msgstr ""
+msgstr "تعيين"
 
 #: templates/admin/view-ticket.php:195
 msgid "Assign to Me"
-msgstr ""
+msgstr "تعيين لي"
 
 #: templates/admin/view-ticket.php:205
 msgid "Add Response"
-msgstr ""
+msgstr "إضافة رد"
 
 #: templates/admin/view-ticket.php:210
 msgid "Response"
-msgstr ""
+msgstr "الرد"
 
 #: templates/admin/view-ticket.php:215
 msgid "Enter your response..."
-msgstr ""
+msgstr "أدخل ردك..."
 
 #: templates/admin/view-ticket.php:220
 msgid "Visible to Customer"
-msgstr ""
+msgstr "مرئي للعميل"
 
 #: templates/admin/view-ticket.php:225
 msgid "Add Response"
-msgstr ""
+msgstr "إضافة رد"
 
 #: templates/admin/view-ticket.php:235
 msgid "Add Internal Note"
-msgstr ""
+msgstr "إضافة ملاحظة داخلية"
 
 #: templates/admin/view-ticket.php:240
 msgid "Internal Note"
-msgstr ""
+msgstr "ملاحظة داخلية"
 
 #: templates/admin/view-ticket.php:245
 msgid "Enter internal note..."
-msgstr ""
+msgstr "أدخل ملاحظة داخلية..."
 
 #: templates/admin/view-ticket.php:250
 msgid "Visible to Customer"
-msgstr ""
+msgstr "مرئي للعميل"
 
 #: templates/admin/view-ticket.php:255
 msgid "Add Note"
-msgstr ""
+msgstr "إضافة ملاحظة"
 
 #: templates/admin/view-ticket.php:265
 msgid "Ticket History"
-msgstr ""
+msgstr "سجل التذكرة"
 
 #: templates/admin/view-ticket.php:275
 msgid "Date"
-msgstr ""
+msgstr "التاريخ"
 
 #: templates/admin/view-ticket.php:276
 msgid "User"
-msgstr ""
+msgstr "المستخدم"
 
 #: templates/admin/view-ticket.php:277
 msgid "Type"
-msgstr ""
+msgstr "النوع"
 
 #: templates/admin/view-ticket.php:278
 msgid "Details"
-msgstr ""
+msgstr "التفاصيل"
 
 #: templates/admin/view-ticket.php:290
 msgid "No history found"
-msgstr ""
+msgstr "لم يتم العثور على سجل"
 
-#: templates/frontend/ticket-create.php:15
+#: includes/class-frontend.php:474 includes/elementor/widgets/ticket-form-widget.php:47
 msgid "Submit New Ticket"
 msgstr "إرسال تذكرة جديدة"
 
@@ -805,223 +805,223 @@ msgstr "إرسال الرد"
 
 #: templates/emails/ticket-created.php:15
 msgid "Your Tire Complaint Has Been Received"
-msgstr ""
+msgstr "تم استلام شكوى الإطار الخاصة بك"
 
 #: templates/emails/ticket-created.php:20
 msgid "Dear %s,"
-msgstr ""
+msgstr "عزيزي %s،"
 
 #: templates/emails/ticket-created.php:25
 msgid "Thank you for contacting Altalayi regarding your tire concern. We have received your complaint and created a support ticket for you."
-msgstr ""
+msgstr "نشكرك لتواصلك مع الطلائع بخصوص مشكلة الإطار. لقد استلمنا شكواك وأنشأنا تذكرة دعم لك."
 
 #: templates/emails/ticket-created.php:30
 msgid "Ticket Information"
-msgstr ""
+msgstr "معلومات التذكرة"
 
 #: templates/emails/ticket-created.php:35
 msgid "Ticket Number:"
-msgstr ""
+msgstr "رقم التذكرة:"
 
 #: templates/emails/ticket-created.php:40
 msgid "Status:"
-msgstr ""
+msgstr "الحالة:"
 
 #: templates/emails/ticket-created.php:45
 msgid "Date Created:"
-msgstr ""
+msgstr "تاريخ الإنشاء:"
 
 #: templates/emails/ticket-created.php:55
 msgid "Tire Brand:"
-msgstr ""
+msgstr "ماركة الإطار:"
 
 #: templates/emails/ticket-created.php:65
 msgid "Access Your Ticket"
-msgstr ""
+msgstr "الوصول إلى تذكرتك"
 
 #: templates/emails/ticket-created.php:70
 msgid "To check the status of your ticket or provide additional information, please use the following credentials:"
-msgstr ""
+msgstr "للتحقق من حالة تذكرتك أو تقديم معلومات إضافية، يرجى استخدام بيانات الاعتماد التالية:"
 
 #: templates/emails/ticket-created.php:75
 msgid "Phone Number:"
-msgstr ""
+msgstr "رقم الهاتف:"
 
 #: templates/emails/ticket-created.php:85
 msgid "View Your Ticket"
-msgstr ""
+msgstr "عرض تذكرتك"
 
 #: templates/emails/ticket-created.php:90
 msgid "What Happens Next?"
-msgstr ""
+msgstr "ماذا يحدث بعد ذلك؟"
 
 #: templates/emails/ticket-created.php:95
 msgid "Our technical team will review your complaint within 24-48 hours"
-msgstr ""
+msgstr "سيقوم فريقنا الفني بمراجعة شكواك خلال 24-48 ساعة"
 
 #: templates/emails/ticket-created.php:100
 msgid "We may contact you for additional information if needed"
-msgstr ""
+msgstr "قد نتصل بك للحصول على معلومات إضافية إذا لزم الأمر"
 
 #: templates/emails/ticket-created.php:105
 msgid "You will receive email updates whenever your ticket status changes"
-msgstr ""
+msgstr "ستتلقى تحديثات بالبريد الإلكتروني كلما تغيرت حالة تذكرتك"
 
 #: templates/emails/ticket-created.php:110
 msgid "We will work to resolve your concern as quickly as possible"
-msgstr ""
+msgstr "سنعمل على حل مشكلتك في أسرع وقت ممكن"
 
 #: templates/emails/ticket-created.php:120
 msgid "Important:"
-msgstr ""
+msgstr "مهم:"
 
 #: templates/emails/ticket-created.php:125
 msgid "Please save your ticket number and keep this email for your records. You will need these credentials to access your ticket online."
-msgstr ""
+msgstr "يرجى حفظ رقم تذكرتك والاحتفاظ بهذا البريد الإلكتروني في سجلاتك. ستحتاج إلى بيانات الاعتماد هذه للوصول إلى تذكرتك عبر الإنترنت."
 
 #: templates/emails/ticket-created.php:130
 msgid "If you have any urgent questions, please don't hesitate to contact our support team directly."
-msgstr ""
+msgstr "إذا كان لديك أي أسئلة عاجلة، يرجى عدم التردد في الاتصال بفريق الدعم لدينا مباشرة."
 
 #: templates/emails/ticket-created.php:135
 msgid "Thank you for choosing Altalayi."
-msgstr ""
+msgstr "شكراً لاختيارك الطلائع."
 
 #: templates/emails/new-ticket-admin.php:15
 msgid "New Ticket Submitted"
-msgstr ""
+msgstr "تم إرسال تذكرة جديدة"
 
 #: templates/emails/new-ticket-admin.php:20
 msgid "A new tire complaint ticket has been submitted and requires your attention."
-msgstr ""
+msgstr "تم إرسال تذكرة شكوى إطار جديدة وتتطلب انتباهك."
 
 #: templates/emails/new-ticket-admin.php:25
 msgid "Ticket Information"
-msgstr ""
+msgstr "معلومات التذكرة"
 
 #: templates/emails/new-ticket-admin.php:30
 msgid "Ticket Number:"
-msgstr ""
+msgstr "رقم التذكرة:"
 
 #: templates/emails/new-ticket-admin.php:35
 msgid "Customer Name:"
-msgstr ""
+msgstr "اسم العميل:"
 
 #: templates/emails/new-ticket-admin.php:40
 msgid "Customer Phone:"
-msgstr ""
+msgstr "هاتف العميل:"
 
 #: templates/emails/new-ticket-admin.php:45
 msgid "Customer Email:"
-msgstr ""
+msgstr "بريد العميل:"
 
 #: templates/emails/new-ticket-admin.php:50
 msgid "Tire Brand:"
-msgstr ""
+msgstr "ماركة الإطار:"
 
 #: templates/emails/new-ticket-admin.php:55
 msgid "Tire Model:"
-msgstr ""
+msgstr "موديل الإطار:"
 
 #: templates/emails/new-ticket-admin.php:60
 msgid "Submitted:"
-msgstr ""
+msgstr "تاريخ الإرسال:"
 
 #: templates/emails/new-ticket-admin.php:70
 msgid "Complaint Details"
-msgstr ""
+msgstr "تفاصيل الشكوى"
 
 #: templates/emails/new-ticket-admin.php:80
 msgid "View Ticket in Admin"
-msgstr ""
+msgstr "عرض التذكرة في لوحة التحكم"
 
 #: templates/emails/new-ticket-admin.php:85
 msgid "Please review this ticket and assign it to the appropriate team member."
-msgstr ""
+msgstr "يرجى مراجعة هذه التذكرة وتعيينها لعضو الفريق المناسب."
 
 #: templates/emails/status-update.php:15
 msgid "Ticket Status Updated"
-msgstr ""
+msgstr "تم تحديث حالة التذكرة"
 
 #: templates/emails/status-update.php:20
 msgid "Dear %s,"
-msgstr ""
+msgstr "عزيزي %s،"
 
 #: templates/emails/status-update.php:25
 msgid "The status of your ticket has been updated."
-msgstr ""
+msgstr "تم تحديث حالة تذكرتك."
 
 #: templates/emails/status-update.php:30
 msgid "Ticket Information"
-msgstr ""
+msgstr "معلومات التذكرة"
 
 #: templates/emails/status-update.php:35
 msgid "Ticket Number:"
-msgstr ""
+msgstr "رقم التذكرة:"
 
 #: templates/emails/status-update.php:40
 msgid "New Status:"
-msgstr ""
+msgstr "الحالة الجديدة:"
 
 #: templates/emails/status-update.php:45
 msgid "Updated:"
-msgstr ""
+msgstr "تم التحديث:"
 
 #: templates/emails/status-update.php:55
 msgid "Assigned To:"
-msgstr ""
+msgstr "مُسند إلى:"
 
 #: templates/emails/status-update.php:65
 msgid "View Your Ticket"
-msgstr ""
+msgstr "عرض تذكرتك"
 
 #: templates/emails/customer-response.php:15
 msgid "Customer Response Received"
-msgstr ""
+msgstr "تم استلام رد العميل"
 
 #: templates/emails/customer-response.php:20
 msgid "Hello %s,"
-msgstr ""
+msgstr "مرحباً %s،"
 
 #: templates/emails/customer-response.php:25
 msgid "A customer has responded to a ticket assigned to you. Please review their response and take appropriate action."
-msgstr ""
+msgstr "لقد رد عميل على تذكرة مُعينة لك. يرجى مراجعة ردهم واتخاذ الإجراء المناسب."
 
 #: templates/emails/ticket-assigned.php:15
 msgid "Ticket Assigned to You"
-msgstr ""
+msgstr "تم تعيين تذكرة لك"
 
 #: templates/emails/ticket-assigned.php:20
 msgid "Hello %s,"
-msgstr ""
+msgstr "مرحباً %s،"
 
 #: templates/emails/ticket-assigned.php:25
 msgid "A tire complaint ticket has been assigned to you. Please review the details and take appropriate action."
-msgstr ""
+msgstr "تم تعيين تذكرة شكوى إطار لك. يرجى مراجعة التفاصيل واتخاذ الإجراء المناسب."
 
 #: templates/emails/employee-response.php:15
 msgid "New Response for Your Ticket"
-msgstr ""
+msgstr "رد جديد على تذكرتك"
 
 #: templates/emails/employee-response.php:20
 msgid "Dear %s,"
-msgstr ""
+msgstr "عزيزي %s،"
 
 #: templates/emails/employee-response.php:25
 msgid "Our team has provided a response to your ticket. Please log in to view the complete details and any follow-up questions or instructions."
-msgstr ""
+msgstr "قدم فريقنا رداً على تذكرتك. يرجى تسجيل الدخول لعرض التفاصيل الكاملة وأي أسئلة متابعة أو تعليمات."
 
 #: templates/emails/basic.php:15
 msgid "Notification"
-msgstr ""
+msgstr "إشعار"
 
 #: templates/emails/basic.php:20
 msgid "This is a basic notification template."
-msgstr ""
+msgstr "هذا هو قالب إشعار أساسي."
 
 #: templates/emails/basic.php:25
 msgid "Template not found. Please contact the system administrator."
-msgstr ""
+msgstr "لم يتم العثور على القالب. يرجى الاتصال بمدير النظام."
 
 #: includes/functions.php:95
 msgid "Open"
@@ -1094,3 +1094,277 @@ msgstr "إنجليزي"
 
 msgid "Arabic"
 msgstr "عربي"
+
+# Frontend template missing translations
+msgid "Created: %s"
+msgstr "تم الإنشاء: %s"
+
+msgid "Back to Login"
+msgstr "العودة للدخول"
+
+msgid "Print"
+msgstr "طباعة"
+
+msgid "City:"
+msgstr "المدينة:"
+
+msgid "Motocare Center/Distributor:"
+msgstr "مركز موتوكير/الموزع:"
+
+msgid "Number of Tires:"
+msgstr "عدد الإطارات:"
+
+msgid "Tire Position:"
+msgstr "موضع الإطار:"
+
+msgid "Air Pressure:"
+msgstr "ضغط الهواء:"
+
+msgid "Tread Depth:"
+msgstr "عمق المداس:"
+
+msgid "Page not found"
+msgstr "الصفحة غير موجودة"
+
+msgid "The requested page could not be found."
+msgstr "لم يتم العثور على الصفحة المطلوبة."
+
+msgid "Submit a Tire Complaint"
+msgstr "إرسال شكوى إطار"
+
+msgid "Please fill out the form below to submit your tire complaint. We will review your case and get back to you as soon as possible."
+msgstr "يرجى ملء النموذج أدناه لإرسال شكوى الإطار. سنراجع حالتك وسنعود إليك في أسرع وقت ممكن."
+
+msgid "This will be used to access your ticket"
+msgstr "سيتم استخدام هذا للوصول إلى تذكرتك"
+
+msgid "We will send ticket updates to this email"
+msgstr "سنرسل تحديثات التذكرة إلى هذا البريد الإلكتروني"
+
+msgid "City"
+msgstr "المدينة"
+
+msgid "Your city"
+msgstr "مدينتك"
+
+msgid "Motocare center visited or market distributor"
+msgstr "مركز موتوكير الذي تمت زيارته أو موزع السوق"
+
+msgid "Name of the center or distributor"
+msgstr "اسم المركز أو الموزع"
+
+msgid "Which Motocare center or market distributor did you visit?"
+msgstr "أي مركز موتوكير أو موزع سوق قمت بزيارته؟"
+
+msgid "Number of Tires"
+msgstr "عدد الإطارات"
+
+msgid "How many tires are affected?"
+msgstr "كم عدد الإطارات المتضررة؟"
+
+msgid "Tire Position"
+msgstr "موضع الإطار"
+
+msgid "Air Pressure"
+msgstr "ضغط الهواء"
+
+msgid "Tread Depth"
+msgstr "عمق المداس"
+
+msgid "e.g., Front Left, Rear Right"
+msgstr "مثل: أمامي يسار، خلفي يمين"
+
+msgid "Which tire position is affected?"
+msgstr "أي موضع إطار متضرر؟"
+
+msgid "Air Pressure Reading"
+msgstr "قراءة ضغط الهواء"
+
+msgid "e.g., 32 PSI, 2.2 Bar"
+msgstr "مثل: 32 PSI، 2.2 بار"
+
+msgid "Current tire air pressure"
+msgstr "ضغط الهواء الحالي للإطار"
+
+msgid "Tread Depth Measurement"
+msgstr "قياس عمق المداس"
+
+msgid "e.g., 6mm, 4/32 inch"
+msgstr "مثل: 6ملم، 4/32 بوصة"
+
+msgid "Current tread depth measurement"
+msgstr "قياس عمق الدعس الحالي"
+
+msgid "Tire Width"
+msgstr "عرض الإطار"
+
+msgid "Width in millimeters (e.g., 225)"
+msgstr "العرض بالملليمتر (مثل: 225)"
+
+msgid "Aspect Ratio"
+msgstr "نسبة العرض للارتفاع"
+
+msgid "Aspect ratio percentage (e.g., 60)"
+msgstr "نسبة العرض للارتفاع مئوية (مثل: 60)"
+
+msgid "Rim Diameter"
+msgstr "قطر الجنط"
+
+msgid "Rim diameter in inches (e.g., 16)"
+msgstr "قطر الجنط بالبوصة (مثل: 16)"
+
+msgid "Complete Tire Size"
+msgstr "مقاس الإطار الكامل"
+
+msgid "Enter values above to see tire size format"
+msgstr "أدخل القيم أعلاه لرؤية تنسيق مقاس الإطار"
+
+msgid "This shows your tire size in standard format (Width/Aspect R Diameter)"
+msgstr "هذا يظهر مقاس إطارك بالتنسيق القياسي (العرض/النسبة R القطر)"
+
+msgid "Purchase Location"
+msgstr "مكان الشراء"
+
+msgid "Select purchase location"
+msgstr "اختر مكان الشراء"
+
+msgid "Current Mileage"
+msgstr "المسافة المقطوعة الحالية"
+
+msgid "Vehicle mileage in kilometers"
+msgstr "مسافة السيارة بالكيلومترات"
+
+msgid "Describe the Issue"
+msgstr "وصف المشكلة"
+
+msgid "Please describe the issue with your tire in detail. Include when the problem started, how it affects your driving, and any other relevant information."
+msgstr "يرجى وصف مشكلة الإطار بالتفصيل. اذكر متى بدأت المشكلة، وكيف تؤثر على قيادتك، وأي معلومات أخرى ذات صلة."
+
+msgid "Supporting Documents"
+msgstr "الوثائق المساندة"
+
+msgid "Tire Images"
+msgstr "صور الإطار"
+
+msgid "Upload clear photos of the tire issue"
+msgstr "ارفع صوراً واضحة لمشكلة الإطار"
+
+msgid "Maximum 5MB per file. JPG, PNG, WebP formats accepted."
+msgstr "الحد الأقصى 5 ميجابايت لكل ملف. تنسيقات JPG، PNG، WebP مقبولة."
+
+msgid "Receipt/Invoice"
+msgstr "فاتورة/إيصال الشراء"
+
+msgid "Upload your purchase receipt or invoice"
+msgstr "ارفع فاتورة أو إيصال الشراء"
+
+msgid "Maximum 5MB. JPG, PNG, PDF formats accepted."
+msgstr "الحد الأقصى 5 ميجابايت. تنسيقات JPG، PNG، PDF مقبولة."
+
+msgid "Enter your ticket number and phone number to view your ticket status and updates."
+msgstr "أدخل رقم تذكرتك ورقم هاتفك لعرض حالة التذكرة والتحديثات."
+
+msgid "Existing Ticket Login"
+msgstr "تسجيل دخول للتذكرة الموجودة"
+
+msgid "Enter your phone number"
+msgstr "أدخل رقم هاتفك"
+
+msgid "Checking..."
+msgstr "جارِ التحقق..."
+
+msgid "OR"
+msgstr "أو"
+
+msgid "Submit New Complaint"
+msgstr "إرسال شكوى جديدة"
+
+msgid "Don't have a ticket yet? Create a new tire complaint."
+msgstr "ليس لديك تذكرة بعد؟ أنشئ شكوى إطار جديدة."
+
+msgid "Create New Ticket"
+msgstr "إنشاء تذكرة جديدة"
+
+msgid "Purchase Date:"
+msgstr "تاريخ الشراء:"
+
+msgid "Purchase Location:"
+msgstr "مكان الشراء:"
+
+msgid "Current Mileage:"
+msgstr "المسافة المقطوعة الحالية:"
+
+msgid "km"
+msgstr "كم"
+
+msgid "View"
+msgstr "عرض"
+
+msgid "Download"
+msgstr "تحميل"
+
+msgid "Additional Information Required"
+msgstr "معلومات إضافية مطلوبة"
+
+msgid "Our team needs additional information to process your ticket. Please provide the requested details below:"
+msgstr "يحتاج فريقنا إلى معلومات إضافية لمعالجة تذكرتك. يرجى تقديم التفاصيل المطلوبة أدناه:"
+
+msgid "Your response has been submitted successfully."
+msgstr "تم إرسال ردك بنجاح."
+
+msgid "Your Response:"
+msgstr "ردك:"
+
+msgid "Please provide the additional information requested by our team..."
+msgstr "يرجى تقديم المعلومات الإضافية التي طلبها فريقنا..."
+
+msgid "Additional Files (Optional):"
+msgstr "ملفات إضافية (اختيارية):"
+
+msgid "Upload additional documents or images if needed"
+msgstr "ارفع مستندات أو صور إضافية إذا لزم الأمر"
+
+msgid "Maximum 5MB per file. Images and PDF files accepted."
+msgstr "الحد الأقصى 5 ميجابايت لكل ملف. الصور وملفات PDF مقبولة."
+
+msgid "Submit Response"
+msgstr "إرسال الرد"
+
+msgid "Submitting..."
+msgstr "جارِ الإرسال..."
+
+msgid "Employee Responses"
+msgstr "ردود الموظفين"
+
+msgid "Ticket Updates"
+msgstr "تحديثات التذكرة"
+
+msgid "No updates available yet."
+msgstr "لا توجد تحديثات متاحة بعد."
+
+msgid "Already have a ticket?"
+msgstr "هل لديك تذكرة بالفعل؟"
+
+msgid "Access your existing ticket"
+msgstr "الوصول إلى تذكرتك الموجودة"
+
+msgid "Additional Required Documents to Attach"
+msgstr "الوثائق الإضافية المطلوب إرفاقها"
+
+msgid "Copy of the vehicle registration (Istimara)"
+msgstr "نسخة من تسجيل المركبة (الاستمارة)"
+
+msgid "Photos of the vehicle (front and rear views)"
+msgstr "صور المركبة (المنظر الأمامي والخلفي)"
+
+msgid "Copy of the wheel alignment printout"
+msgstr "نسخة من مطبوعة ضبط الإطارات"
+
+msgid "Upload any additional supporting documents"
+msgstr "ارفع أي مستندات داعمة إضافية"
+
+msgid "Maximum 5MB per file. Images, PDF, Word, and text files accepted."
+msgstr "الحد الأقصى 5 ميجابايت لكل ملف. الصور، PDF، Word، وملفات النص مقبولة."
+
+msgid "Your ticket number:"
+msgstr "رقم تذكرتك:"

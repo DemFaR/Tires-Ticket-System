@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Altalayi Tire Ticket System
- * Plugin URI: https://altalayi.com
+ * Plugin URI: https://al-talayi.com.sa
  * Description: Professional ticket system for tire warranty and customer complaints management for Altalayi company. Features advanced email notifications, role-based access control, file uploads, comprehensive ticket management, full Arabic localization, and Polylang integration.
- * Version: 1.3.0
+ * Version: 1.5.0
  * Author: Mohamed Ashraf
- * Author URI: https://altalayi.com
+ * Author URI: https://al-talayi.com.sa
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: altalayi-ticket
@@ -16,9 +16,9 @@
  * Network: false
  * 
  * @package AltalayiTicketSystem
- * @version 1.3.0
+ * @version 1.5.0
  * @author Mohamed Ashraf
- * @copyright 2024 Altalayi Company
+ * @copyright 2025 Altalayi Company
  */
 
 // Prevent direct access
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('ALTALAYI_TICKET_VERSION', '1.2.0');
+define('ALTALAYI_TICKET_VERSION', '1.5.0');
 define('ALTALAYI_TICKET_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ALTALAYI_TICKET_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('ALTALAYI_TICKET_PLUGIN_FILE', __FILE__);
@@ -87,6 +87,8 @@ class AltalayiTicketSystem {
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-frontend.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-email.php';
         require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-ajax.php';
+        require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-whatsapp.php';
+        require_once ALTALAYI_TICKET_PLUGIN_PATH . 'includes/class-wasenderapi.php';
         
         // Include Elementor integration if Elementor is active
         if (did_action('elementor/loaded')) {

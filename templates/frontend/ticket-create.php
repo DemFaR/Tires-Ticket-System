@@ -9,8 +9,8 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="altalayi-ticket-container">
-    <?php include plugin_dir_path(__FILE__) . 'language-switcher.php'; ?>
-    
+    <!--< ?php include plugin_dir_path(__FILE__) . 'language-switcher.php'; ?>-->
+
     <div class="ticket-form-wrapper">
         <div class="form-header">
             <h1><?php _e('Submit a Tire Complaint', 'altalayi-ticket'); ?></h1>
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
         
         <div id="ticket-messages"></div>
         
-        <form id="altalayi-ticket-form" class="ticket-form" enctype="multipart/form-data">
+        <form id="altalayi-ticket-form" class="ticket-form" method="post" enctype="multipart/form-data">
             <?php wp_nonce_field('altalayi_ticket_nonce', 'nonce'); ?>
             
             <!-- Customer Information -->
@@ -39,10 +39,25 @@ if (!defined('ABSPATH')) {
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="customer_email"><?php _e('Email Address', 'altalayi-ticket'); ?> <span class="required">*</span></label>
-                    <input type="email" id="customer_email" name="customer_email" style="width: 90%" required>
-                    <small><?php _e('We will send ticket updates to this email', 'altalayi-ticket'); ?></small>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customer_email"><?php _e('Email Address', 'altalayi-ticket'); ?> <span class="required">*</span></label>
+                        <input type="email" id="customer_email" name="customer_email" style="width: 90%" required>
+                        <small><?php _e('We will send ticket updates to this email', 'altalayi-ticket'); ?></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer_city"><?php _e('City', 'altalayi-ticket'); ?></label>
+                        <input type="text" id="customer_city" name="customer_city" style="width: 90%" placeholder="<?php _e('Your city', 'altalayi-ticket'); ?>">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="motocare_center_visited"><?php _e('Motocare center visited or market distributor', 'altalayi-ticket'); ?></label>
+                        <input type="text" id="motocare_center_visited" name="motocare_center_visited" style="width: 90%" placeholder="<?php _e('Name of the center or distributor', 'altalayi-ticket'); ?>">
+                        <small><?php _e('Which Motocare center or market distributor did you visit?', 'altalayi-ticket'); ?></small>
+                    </div>
                 </div>
             </fieldset>
             
@@ -62,6 +77,36 @@ if (!defined('ABSPATH')) {
                     </div>
                 </div>
                 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="number_of_tires"><?php _e('Number of Tires', 'altalayi-ticket'); ?></label>
+                        <input type="number" id="number_of_tires" name="number_of_tires" style="width: 90%" placeholder="1" min="1" max="10">
+                        <small><?php _e('How many tires are affected?', 'altalayi-ticket'); ?></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tire_position"><?php _e('Tire Position', 'altalayi-ticket'); ?></label>
+                        <input type="text" id="tire_position" name="tire_position" style="width: 90%" placeholder="<?php _e('e.g., Front Left, Rear Right', 'altalayi-ticket'); ?>">
+                        <small><?php _e('Which tire position is affected?', 'altalayi-ticket'); ?></small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="air_pressure"><?php _e('Air Pressure Reading', 'altalayi-ticket'); ?></label>
+                        <input type="text" id="air_pressure" name="air_pressure" style="width: 90%" placeholder="<?php _e('e.g., 32 PSI, 2.2 Bar', 'altalayi-ticket'); ?>">
+                        <small><?php _e('Current tire air pressure', 'altalayi-ticket'); ?></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tread_depth"><?php _e('Tread Depth Measurement', 'altalayi-ticket'); ?></label>
+                        <input type="text" id="tread_depth" name="tread_depth" style="width: 90%" placeholder="<?php _e('e.g., 6mm, 4/32 inch', 'altalayi-ticket'); ?>">
+                        <small><?php _e('Current tread depth measurement', 'altalayi-ticket'); ?></small>
+                    </div>
+                </div>
+                
+                <!-- Hide/Comment tire size section -->
+                <!--
                 <div class="form-row tire-size-row">
                     <div class="form-group">
                         <label for="tire_size_width"><?php _e('Tire Width', 'altalayi-ticket'); ?></label>
@@ -91,6 +136,7 @@ if (!defined('ABSPATH')) {
                         <small><?php _e('This shows your tire size in standard format (Width/Aspect R Diameter)', 'altalayi-ticket'); ?></small>
                     </div>
                 </div>
+                -->
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -100,10 +146,17 @@ if (!defined('ABSPATH')) {
                     
                     <div class="form-group">
                         <label for="purchase_location"><?php _e('Purchase Location', 'altalayi-ticket'); ?></label>
-                        <input type="text" id="purchase_location" name="purchase_location" style="width: 90%" placeholder="<?php _e('Store name or location', 'altalayi-ticket'); ?>">
+                        <select id="purchase_location" name="purchase_location" style="width: 90%">
+                            <option value=""><?php _e('Select purchase location', 'altalayi-ticket'); ?></option>
+                            <?php foreach (altalayi_get_purchase_locations() as $key => $label): ?>
+                                <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($label); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 
+                <!-- Hide/Comment current mileage -->
+                <!--
                 <div class="form-row">
                     <div class="form-group">
                         <label for="mileage"><?php _e('Current Mileage', 'altalayi-ticket'); ?></label>
@@ -111,6 +164,7 @@ if (!defined('ABSPATH')) {
                         <small><?php _e('Vehicle mileage in kilometers', 'altalayi-ticket'); ?></small>
                     </div>
                 </div>
+                -->
             </fieldset>
             
             <!-- Complaint Details -->
@@ -155,7 +209,10 @@ if (!defined('ABSPATH')) {
                     </div>
                     
                     <div class="form-group">
-                        <label for="additional_files"><?php _e('Additional Documents', 'altalayi-ticket'); ?></label>
+                        <label for="additional_files"><?php _e('Additional Required Documents to Attach', 'altalayi-ticket'); ?></label>
+                        • <?php _e('Copy of the vehicle registration (Istimara)', 'altalayi-ticket'); ?><br>
+                        • <?php _e('Photos of the vehicle (front and rear views)', 'altalayi-ticket'); ?><br>
+                        • <?php _e('Copy of the wheel alignment printout', 'altalayi-ticket'); ?></p>
                         <div class="file-upload-area">
                             <input type="file" id="additional_files" name="additional_files[]" multiple accept="image/*,.pdf,.doc,.docx,.txt,.rtf,.odt">
                             <div class="upload-instructions">
@@ -300,12 +357,48 @@ if (!defined('ABSPATH')) {
     border-radius: 6px;
     font-size: 16px;
     transition: border-color 0.3s;
+    display: block !important; /* Force display for all form elements */
+    visibility: visible !important; /* Ensure visibility */
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: #3498db;
+}
+
+/* Specific override for select elements that might be hidden by theme/plugins */
+select#purchase_location,
+.form-group select {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* Hide jQuery UI selectmenu widget and show native select */
+.form-group .ui-selectmenu-button {
+    display: none !important;
+}
+
+.form-group select#purchase_location {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    height: auto !important;
+    min-height: 44px !important;
+    background: white !important;
+}
+
+/* Ensure native select styling */
+.form-group select {
+    -webkit-appearance: menulist !important;
+    -moz-appearance: menulist !important;
+    appearance: auto !important;
 }
 
 .form-group small {
@@ -502,94 +595,162 @@ if (!defined('ABSPATH')) {
 </style>
 
 <script>
-// Form submission handler only - NO FILE PREVIEW FUNCTIONALITY
-jQuery(document).ready(function($) {
-    // Tire size calculator
-    function updateTireSize() {
-        var width = $('#tire_size_width').val();
-        var aspect = $('#tire_size_aspect').val();
-        var diameter = $('#tire_size_diameter').val();
-        var preview = $('#tire-size-result');
-        var previewContainer = $('.tire-size-preview');
-        
-        if (width && aspect && diameter) {
-            var tireSize = width + '/' + aspect + 'R' + diameter;
-            preview.text(tireSize);
-            previewContainer.addClass('has-values');
-        } else if (width || aspect || diameter) {
-            var partial = (width || '___') + '/' + (aspect || '__') + 'R' + (diameter || '__');
-            preview.text(partial);
-            previewContainer.removeClass('has-values');
-        } else {
-            preview.text('<?php _e("Enter values above to see tire size format", "altalayi-ticket"); ?>');
-            previewContainer.removeClass('has-values');
+// Wait for jQuery to be available and ensure altalayi_ajax is defined
+(function() {
+    function initTicketForm() {
+        // Check if jQuery is available
+        if (typeof jQuery === 'undefined') {
+            setTimeout(initTicketForm, 100);
+            return;
         }
-    }
-    
-    // Update tire size on input change
-    $('#tire_size_width, #tire_size_aspect, #tire_size_diameter').on('input change', updateTireSize);
-    
-    // Form submission handler
-    $('#altalayi-ticket-form').on('submit', function(e) {
-        e.preventDefault();
         
-        var form = $(this);
-        var submitBtn = form.find('.submit-btn');
-        var formData = new FormData(this);
-        formData.append('action', 'altalayi_submit_ticket');
+        // Ensure altalayi_ajax is available
+        if (typeof altalayi_ajax === 'undefined') {
+            window.altalayi_ajax = {
+                ajax_url: '<?php echo admin_url("admin-ajax.php"); ?>',
+                nonce: '<?php echo wp_create_nonce("altalayi_ticket_nonce"); ?>'
+            };
+        }
         
-        // Disable submit button
-        submitBtn.prop('disabled', true);
-        submitBtn.find('.btn-text').hide();
-        submitBtn.find('.btn-loading').show();
-        
-        $.ajax({
-            url: altalayi_ajax.ajax_url,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    $('#ticket-messages').html(
-                        '<div class="ticket-message success">' +
-                        '<strong><?php _e("Success!", "altalayi-ticket"); ?></strong> ' +
-                        response.data.message +
-                        '<br><strong><?php _e("Your ticket number:", "altalayi-ticket"); ?></strong> ' + response.data.ticket_number +
-                        '</div>'
-                    );
-                    
-                    setTimeout(function() {
-                        window.location.href = response.data.redirect_url;
-                    }, 1500);
-                } else {
+        // Use jQuery with noConflict mode
+        jQuery(function($) {
+            // Safely handle selectmenu if it exists
+            try {
+                if ($('#purchase_location').hasClass('ui-selectmenu-button') || $('#purchase_location').data('ui-selectmenu')) {
+                    $('#purchase_location').selectmenu('destroy').off('selectmenuchange');
+                }
+            } catch (e) {
+                // Selectmenu doesn't exist or not initialized, continue
+                console.log('SelectMenu not initialized, continuing...');
+            }
+            
+            // Force native select display
+            $('#purchase_location').show().css({
+                'display': 'block !important',
+                'visibility': 'visible !important',
+                'opacity': '1 !important',
+                'position': 'static !important',
+                'height': 'auto !important',
+                'min-height': '44px !important'
+            });
+            
+            // Hide any UI selectmenu buttons
+            $('.ui-selectmenu-button').hide();
+            
+            // Form submission handler
+            $('#altalayi-ticket-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                var form = $(this);
+                var submitBtn = form.find('.submit-btn');
+                var formData = new FormData(this);
+                formData.append('action', 'altalayi_submit_ticket');
+                
+                // Clear any previous messages
+                $('#ticket-messages').empty();
+                
+                // Disable submit button
+                submitBtn.prop('disabled', true);
+                submitBtn.find('.btn-text').hide();
+                submitBtn.find('.btn-loading').show();
+                
+                // Check if we have the AJAX URL
+                if (typeof altalayi_ajax === 'undefined' || !altalayi_ajax.ajax_url) {
                     $('#ticket-messages').html(
                         '<div class="ticket-message error">' +
                         '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +
-                        response.data.message +
+                        '<?php _e("AJAX configuration missing. Please refresh the page and try again.", "altalayi-ticket"); ?>' +
                         '</div>'
                     );
+                    
+                    // Re-enable submit button
+                    submitBtn.prop('disabled', false);
+                    submitBtn.find('.btn-text').show();
+                    submitBtn.find('.btn-loading').hide();
+                    return;
                 }
-            },
-            error: function() {
-                $('#ticket-messages').html(
-                    '<div class="ticket-message error">' +
-                    '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +
-                    '<?php _e("An unexpected error occurred. Please try again.", "altalayi-ticket"); ?>' +
-                    '</div>'
-                );
-            },
-            complete: function() {
-                // Re-enable submit button
-                submitBtn.prop('disabled', false);
-                submitBtn.find('.btn-text').show();
-                submitBtn.find('.btn-loading').hide();
                 
-                $('html, body').animate({
-                    scrollTop: $('#ticket-messages').offset().top - 100
-                }, 500);
-            }
+                $.ajax({
+                    url: altalayi_ajax.ajax_url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    timeout: 30000, // 30 second timeout
+                    success: function(response) {
+                        if (response.success) {
+                            $('#ticket-messages').html(
+                                '<div class="ticket-message success">' +
+                                '<strong><?php _e("Success!", "altalayi-ticket"); ?></strong> ' +
+                                response.data.message +
+                                '<br><strong><?php _e("Your ticket number:", "altalayi-ticket"); ?></strong> ' + response.data.ticket_number +
+                                '</div>'
+                            );
+                            
+                            // Clear form
+                            form[0].reset();
+                            
+                            // Redirect after 3 seconds
+                            setTimeout(function() {
+                                if (response.data.redirect_url) {
+                                    window.location.href = response.data.redirect_url;
+                                }
+                            }, 3000);
+                        } else {
+                            $('#ticket-messages').html(
+                                '<div class="ticket-message error">' +
+                                '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +
+                                (response.data && response.data.message ? response.data.message : '<?php _e("Unknown error occurred", "altalayi-ticket"); ?>') +
+                                '</div>'
+                            );
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = '<?php _e("An unexpected error occurred. Please try again.", "altalayi-ticket"); ?>';
+                        
+                        if (status === 'timeout') {
+                            errorMessage = '<?php _e("Request timed out. Please check your connection and try again.", "altalayi-ticket"); ?>';
+                        } else if (xhr.responseText) {
+                            try {
+                                var response = JSON.parse(xhr.responseText);
+                                if (response.data && response.data.message) {
+                                    errorMessage = response.data.message;
+                                }
+                            } catch (e) {
+                                // Use default error message
+                            }
+                        }
+                        
+                        $('#ticket-messages').html(
+                            '<div class="ticket-message error">' +
+                            '<strong><?php _e("Error:", "altalayi-ticket"); ?></strong> ' +
+                            errorMessage +
+                            '</div>'
+                        );
+                    },
+                    complete: function() {
+                        // Re-enable submit button
+                        submitBtn.prop('disabled', false);
+                        submitBtn.find('.btn-text').show();
+                        submitBtn.find('.btn-loading').hide();
+                        
+                        // Scroll to messages
+                        if ($('#ticket-messages').length && $('#ticket-messages').html()) {
+                            $('html, body').animate({
+                                scrollTop: $('#ticket-messages').offset().top - 100
+                            }, 500);
+                        }
+                    }
+                });
+            });
         });
-    });
-});
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTicketForm);
+    } else {
+        initTicketForm();
+    }
+})();
 </script>

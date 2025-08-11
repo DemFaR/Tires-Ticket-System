@@ -336,7 +336,8 @@ class AltalayiTicketAjax {
             wp_send_json_error(array('message' => __('Please provide a valid email address', 'altalayi-ticket')));
         }
         
-        // Prepare tire size from individual components
+        // Prepare tire size from individual components - COMMENTED OUT since tire size fields are hidden
+        /*
         $tire_width = sanitize_text_field($_POST['tire_size_width']);
         $tire_aspect = sanitize_text_field($_POST['tire_size_aspect']);
         $tire_diameter = sanitize_text_field($_POST['tire_size_diameter']);
@@ -345,19 +346,26 @@ class AltalayiTicketAjax {
         if (!empty($tire_width) && !empty($tire_aspect) && !empty($tire_diameter)) {
             $tire_size = $tire_width . '/' . $tire_aspect . 'R' . $tire_diameter;
         }
+        */
         
         // Prepare ticket data
         $ticket_data = array(
             'customer_name' => sanitize_text_field($_POST['customer_name']),
             'customer_phone' => sanitize_text_field($_POST['customer_phone']),
             'customer_email' => sanitize_email($_POST['customer_email']),
+            'customer_city' => sanitize_text_field($_POST['customer_city'] ?? ''),
+            'motocare_center_visited' => sanitize_text_field($_POST['motocare_center_visited'] ?? ''),
             'complaint_text' => sanitize_textarea_field($_POST['complaint_text']),
             'tire_brand' => sanitize_text_field($_POST['tire_brand']),
             'tire_model' => sanitize_text_field($_POST['tire_model']),
-            'tire_size' => $tire_size,
+            'tire_size' => '', // Keep empty since tire size fields are hidden
+            'number_of_tires' => intval($_POST['number_of_tires'] ?? 0),
+            'tire_position' => sanitize_text_field($_POST['tire_position'] ?? ''),
+            'air_pressure' => sanitize_text_field($_POST['air_pressure'] ?? ''),
+            'tread_depth' => sanitize_text_field($_POST['tread_depth'] ?? ''),
             'purchase_date' => sanitize_text_field($_POST['purchase_date']),
-            'purchase_location' => sanitize_text_field($_POST['purchase_location']),
-            'mileage' => intval($_POST['mileage'])
+            'purchase_location' => sanitize_text_field($_POST['purchase_location'] ?? ''),
+            'mileage' => 0 // Keep as 0 since mileage field is hidden
         );
         
         // Create ticket
@@ -492,8 +500,8 @@ class AltalayiTicketAjax {
             if ($is_ajax_request) {
                 wp_send_json_success(array('message' => __('Response added successfully', 'altalayi-ticket')));
             } else {
-                // Redirect back to ticket page with success message
-                $redirect_url = altalayi_get_ticket_url($ticket->ticket_number) . '?message=success';
+                // Redirect back to ticket page without URL parameters
+                $redirect_url = altalayi_get_ticket_url($ticket->ticket_number);
                 wp_redirect($redirect_url);
                 exit;
             }

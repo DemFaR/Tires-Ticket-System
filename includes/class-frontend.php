@@ -852,7 +852,7 @@ class AltalayiTicketFrontend {
         ), $atts, 'altalayi_language_switcher');
         
         ob_start();
-        include plugin_dir_path(__FILE__) . '../templates/frontend/language-switcher.php';
+        //include plugin_dir_path(__FILE__) . '../templates/frontend/language-switcher.php';
         return ob_get_clean();
     }
 }

@@ -10,10 +10,108 @@ if (!defined('ABSPATH')) {
 class AltalayiTicketEmail {
     
     private $db;
+    private $whatsapp;
+    private $wasenderapi;
     
     public function __construct() {
         $this->db = new AltalayiTicketDatabase();
+        $this->whatsapp = new AltalayiTicketWhatsApp();
+        $this->wasenderapi = new AltalayiTicketWaSenderAPI();
         add_filter('wp_mail_content_type', array($this, 'set_html_content_type'));
+        
+        // Configure SMTP if enabled
+        $this->configure_smtp();
+        
+        // Add AJAX handler for SMTP testing
+        add_action('wp_ajax_altalayi_test_smtp', array($this, 'test_smtp'));
+    }
+    
+    /**
+     * Configure SMTP settings
+     */
+    private function configure_smtp() {
+        $settings = get_option('altalayi_ticket_settings', array());
+        
+        if (!empty($settings['enable_smtp']) && !empty($settings['smtp_host'])) {
+            add_action('phpmailer_init', array($this, 'configure_phpmailer'));
+        }
+    }
+    
+    /**
+     * Configure PHPMailer for SMTP
+     */
+    public function configure_phpmailer($phpmailer) {
+        $settings = get_option('altalayi_ticket_settings', array());
+        
+        $phpmailer->isSMTP();
+        $phpmailer->Host = $settings['smtp_host'];
+        $phpmailer->Port = intval($settings['smtp_port']);
+        $phpmailer->SMTPAuth = true;
+        $phpmailer->Username = $settings['smtp_username'];
+        $phpmailer->Password = $settings['smtp_password'];
+        
+        // Set encryption
+        if ($settings['smtp_secure'] === 'ssl') {
+            $phpmailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        } elseif ($settings['smtp_secure'] === 'tls') {
+            $phpmailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        }
+        
+        // Set From address if configured
+        if (!empty($settings['smtp_from_email'])) {
+            $phpmailer->setFrom(
+                $settings['smtp_from_email'], 
+                !empty($settings['smtp_from_name']) ? $settings['smtp_from_name'] : ''
+            );
+        }
+        
+        // Enable debug for development (you can remove this in production)
+        // $phpmailer->SMTPDebug = 2;
+    }
+    
+    /**
+     * Test SMTP configuration
+     */
+    public function test_smtp() {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'altalayi_test_smtp')) {
+            wp_send_json_error(array('message' => __('Security check failed', 'altalayi-ticket')));
+        }
+        
+        $test_email = sanitize_email($_POST['email']);
+        if (!is_email($test_email)) {
+            wp_send_json_error(array('message' => __('Invalid email address', 'altalayi-ticket')));
+        }
+        
+        $settings = get_option('altalayi_ticket_settings', array());
+        $subject = __('[Altalayi] SMTP Test Email', 'altalayi-ticket');
+        $message = sprintf(
+            __('This is a test email to verify your SMTP configuration is working correctly.
+
+Sent from: %s
+Test time: %s
+SMTP Host: %s
+SMTP Port: %s
+
+If you received this email, your SMTP configuration is working properly!
+
+Best regards,
+Altalayi Ticket System', 'altalayi-ticket'),
+            home_url(),
+            current_time('Y-m-d H:i:s'),
+            $settings['smtp_host'],
+            $settings['smtp_port']
+        );
+        
+        $headers = $this->get_email_headers();
+        
+        $sent = wp_mail($test_email, $subject, $message, $headers);
+        
+        if ($sent) {
+            wp_send_json_success(array('message' => __('Test email sent successfully!', 'altalayi-ticket')));
+        } else {
+            wp_send_json_error(array('message' => __('Failed to send test email. Please check your SMTP settings.', 'altalayi-ticket')));
+        }
     }
     
     /**
@@ -28,8 +126,15 @@ class AltalayiTicketEmail {
      */
     private function get_email_headers() {
         $settings = get_option('altalayi_ticket_settings', array());
-        $from_email = !empty($settings['company_email']) ? $settings['company_email'] : 'support@altalayi.com';
-        $from_name = !empty($settings['company_name']) ? $settings['company_name'] : 'Altalayi Support';
+        
+        // Use SMTP settings if available, otherwise fall back to company settings
+        if (!empty($settings['enable_smtp']) && !empty($settings['smtp_from_email'])) {
+            $from_email = $settings['smtp_from_email'];
+            $from_name = !empty($settings['smtp_from_name']) ? $settings['smtp_from_name'] : 'Altalayi Support';
+        } else {
+            $from_email = !empty($settings['company_email']) ? $settings['company_email'] : 'support@altalayi.com';
+            $from_name = !empty($settings['company_name']) ? $settings['company_name'] : 'Altalayi Support';
+        }
         
         return array(
             'From: ' . $from_name . ' <' . $from_email . '>',
@@ -91,6 +196,16 @@ class AltalayiTicketEmail {
             }
         }
         
+        // Send WhatsApp notification if enabled
+        if ($this->whatsapp->is_enabled()) {
+            $this->whatsapp->send_ticket_created_notification($ticket_id);
+        }
+        
+        // Send WaSenderAPI notification if enabled (priority over WhatsApp Business)
+        if ($this->wasenderapi->is_enabled()) {
+            $this->wasenderapi->send_ticket_created_notification($ticket_id);
+        }
+        
         return $sent;
     }
     
@@ -108,12 +223,24 @@ class AltalayiTicketEmail {
         
         $message = $this->get_email_template('status-update', array(
             'ticket' => $ticket,
-            'view_url' => altalayi_get_ticket_view_url($ticket->ticket_number)
+            'login_url' => altalayi_get_access_ticket_url()
         ));
         
         $headers = $this->get_email_headers();
         
-        return wp_mail($ticket->customer_email, $subject, $message, $headers);
+        $email_sent = wp_mail($ticket->customer_email, $subject, $message, $headers);
+        
+        // Send WhatsApp notification if enabled
+        if ($this->whatsapp->is_enabled()) {
+            $this->whatsapp->send_status_update_notification($ticket_id);
+        }
+        
+        // Send WaSenderAPI notification if enabled (priority over WhatsApp Business)
+        if ($this->wasenderapi->is_enabled()) {
+            $this->wasenderapi->send_status_update_notification($ticket_id);
+        }
+        
+        return $email_sent;
     }
     
     /**
@@ -183,12 +310,24 @@ class AltalayiTicketEmail {
         
         $message = $this->get_email_template('employee-response', array(
             'ticket' => $ticket,
-            'view_url' => altalayi_get_ticket_view_url($ticket->ticket_number)
+            'login_url' => altalayi_get_access_ticket_url()
         ));
         
         $headers = $this->get_email_headers();
         
-        return wp_mail($ticket->customer_email, $subject, $message, $headers);
+        $email_sent = wp_mail($ticket->customer_email, $subject, $message, $headers);
+        
+        // Send WhatsApp notification if enabled
+        if ($this->whatsapp->is_enabled()) {
+            $this->whatsapp->send_employee_response_notification($ticket_id);
+        }
+        
+        // Send WaSenderAPI notification if enabled (priority over WhatsApp Business)
+        if ($this->wasenderapi->is_enabled()) {
+            $this->wasenderapi->send_employee_response_notification($ticket_id);
+        }
+        
+        return $email_sent;
     }
     
     /**

@@ -115,6 +115,18 @@ if (!defined('ABSPATH')) {
                                 <?php echo esc_html($ticket->customer_email); ?>
                             </a>
                         </div>
+                        <?php if ($ticket->customer_city): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('City:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->customer_city); ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($ticket->motocare_center_visited): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('Motocare Center/Distributor:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->motocare_center_visited); ?>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
@@ -122,34 +134,72 @@ if (!defined('ABSPATH')) {
                 <div class="content-section">
                     <h3><?php _e('Tire Information', 'altalayi-ticket'); ?></h3>
                     <div class="tire-details">
+                        <?php if ($ticket->tire_brand): ?>
                         <div class="detail-row">
                             <strong><?php _e('Brand:', 'altalayi-ticket'); ?></strong>
                             <?php echo esc_html($ticket->tire_brand); ?>
                         </div>
-                        <div class="detail-row">
-                            <strong><?php _e('Size:', 'altalayi-ticket'); ?></strong>
-                            <?php echo esc_html($ticket->tire_size); ?>
-                        </div>
+                        <?php endif; ?>
+                        <?php if ($ticket->tire_model): ?>
                         <div class="detail-row">
                             <strong><?php _e('Model:', 'altalayi-ticket'); ?></strong>
                             <?php echo esc_html($ticket->tire_model); ?>
                         </div>
+                        <?php endif; ?>
+                        <!-- Hide tire size field -->
+                        <?php /*
+                        <?php if ($ticket->tire_size): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('Size:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->tire_size); ?>
+                        </div>
+                        <?php endif; ?>
+                        */ ?>
+                        <?php if ($ticket->number_of_tires): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('Number of Tires:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->number_of_tires); ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($ticket->tire_position): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('Tire Position:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->tire_position); ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($ticket->air_pressure): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('Air Pressure:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->air_pressure); ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($ticket->tread_depth): ?>
+                        <div class="detail-row">
+                            <strong><?php _e('Tread Depth:', 'altalayi-ticket'); ?></strong>
+                            <?php echo esc_html($ticket->tread_depth); ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($ticket->purchase_date && $ticket->purchase_date !== '0000-00-00'): ?>
                         <div class="detail-row">
                             <strong><?php _e('Purchase Date:', 'altalayi-ticket'); ?></strong>
-                            <?php echo altalayi_format_date($ticket->purchase_date); ?>
+                            <?php echo date('F j, Y', strtotime($ticket->purchase_date)); ?>
                         </div>
+                        <?php endif; ?>
                         <?php if ($ticket->purchase_location): ?>
                         <div class="detail-row">
                             <strong><?php _e('Purchase Location:', 'altalayi-ticket'); ?></strong>
-                            <?php echo esc_html($ticket->purchase_location); ?>
+                            <?php echo esc_html(altalayi_get_purchase_location_label($ticket->purchase_location)); ?>
                         </div>
                         <?php endif; ?>
+                        <!-- Hide mileage field -->
+                        <?php /*
                         <?php if ($ticket->mileage): ?>
                         <div class="detail-row">
                             <strong><?php _e('Mileage:', 'altalayi-ticket'); ?></strong>
                             <?php echo esc_html($ticket->mileage); ?> km
                         </div>
                         <?php endif; ?>
+                        */ ?>
                     </div>
                 </div>
                 

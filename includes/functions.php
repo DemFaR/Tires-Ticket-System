@@ -389,3 +389,23 @@ function altalayi_notification_type_enabled($type) {
     
     return isset($enabled_types[$type]) && $enabled_types[$type] == 1;
 }
+
+/**
+ * Get purchase location options with translations
+ */
+function altalayi_get_purchase_locations() {
+    return array(
+        'market_customer' => __('Market Customer', 'altalayi-ticket'),
+        'motokare_center' => __('Motocare Center', 'altalayi-ticket'),
+        'car_dealership' => __('Car Dealership', 'altalayi-ticket'),
+        'companies' => __('Companies', 'altalayi-ticket')
+    );
+}
+
+/**
+ * Get translated purchase location label
+ */
+function altalayi_get_purchase_location_label($location) {
+    $locations = altalayi_get_purchase_locations();
+    return isset($locations[$location]) ? $locations[$location] : $location;
+}

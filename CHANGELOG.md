@@ -5,6 +5,34 @@ All notable changes to the Altalayi Tire Ticket System will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-08-07
+
+### 🚀 New Features
+- **WaSenderAPI Integration**: Added WaSenderAPI as an alternative to WhatsApp Business API for sending WhatsApp notifications
+- **Dual WhatsApp Support**: Plugin now supports both official WhatsApp Business API and WaSenderAPI
+- **Enhanced Notification Settings**: New dedicated WhatsApp tab in admin settings with separate configuration for both services
+- **Priority-Based Notifications**: WaSenderAPI takes priority over WhatsApp Business API when both are enabled
+
+### 🎛️ Admin Enhancements
+- **New WhatsApp Settings Tab**: Reorganized WhatsApp settings into a dedicated tab for better organization
+- **WaSenderAPI Configuration**: Complete settings interface for WaSenderAPI including API key and session management
+- **Test Functionality**: Added test message functionality for both WhatsApp Business API and WaSenderAPI
+- **Real-time Validation**: Enhanced form validation for API keys and phone numbers
+- **Visual Indicators**: Distinct styling for WhatsApp Business (blue) and WaSenderAPI (green) sections
+
+### 🔧 Technical Improvements
+- **New Class**: Added `AltalayiTicketWaSenderAPI` class for WaSenderAPI integration
+- **Enhanced Email Class**: Updated notification system to support both WhatsApp services
+- **Improved Phone Formatting**: Enhanced phone number formatting for both APIs
+- **Session Status Checking**: Added WaSenderAPI session status verification
+- **Error Handling**: Comprehensive error handling and logging for both APIs
+
+### 📱 WhatsApp Notifications
+- **Service Selection**: Choose between WhatsApp Business API (official) or WaSenderAPI (alternative)
+- **Configuration Options**: Separate settings for API keys, tokens, and notification preferences
+- **Message Templates**: Consistent message templates across both services
+- **Notification Types**: Support for ticket creation, status updates, and employee response notifications
+
 ## [1.3.0] - 2025-07-29
 
 ### 🌐 Polylang Integration & URL Routing
